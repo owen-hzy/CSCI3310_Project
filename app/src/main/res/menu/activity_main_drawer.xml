@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_today"
+            android:icon="@drawable/ic_menu_period"
+            android:title="@string/today"
+            android:checked="true" />
+        <item
+            android:id="@+id/nav_week"
+            android:icon="@drawable/ic_menu_period"
+            android:title="@string/week" />
+        <item
+            android:id="@+id/nav_month"
+            android:icon="@drawable/ic_menu_period"
+            android:title="@string/month" />
+        <item
+            android:id="@+id/nav_year"
+            android:icon="@drawable/ic_menu_period"
+            android:title="@string/year" />
+    </group>
+
+    <item android:title="Category">
+        <menu>
+            <item
+                android:id="@+id/nav_account"
+                android:icon="@drawable/ic_menu_account"
+                android:title="@string/account"
+                android:checkable="true" />
+            <item
+                android:id="@+id/nav_summary"
+                android:icon="@drawable/ic_menu_summary"
+                android:title="@string/summary"
+                android:checkable="true" />
+            <item
+                android:id="@+id/nav_budget"
+                android:icon="@drawable/ic_menu_budget"
+                android:title="@string/budget"
+                android:checkable="true" />
+        </menu>
+    </item>
+
+</menu>
