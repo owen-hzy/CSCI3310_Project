@@ -78,8 +78,10 @@
         <!--android:scrollbars="vertical" />-->
 
     <ListView
-        android:id="@+id/list"
+        android:id="@+id/record_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        tools:listitem="@layout/fragment_record" />
 
 </LinearLayout>
