@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    tools:context="csci3310.cuhk.edu.hk.project.fragment.RecordFragment">
+    tools:context=".fragment.AttributeFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -67,14 +67,19 @@
     </RelativeLayout>
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/record_list"
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/record_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--app:layoutManager="LinearLayoutManager"-->
+        <!--tools:listitem="@layout/fragment_attribute"-->
+        <!--android:scrollbars="vertical" />-->
+
+    <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_record"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>
