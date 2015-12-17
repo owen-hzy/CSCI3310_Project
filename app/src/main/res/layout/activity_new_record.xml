@@ -2,10 +2,11 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/attribute_coordinator_layout_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="csci3310.cuhk.edu.hk.project.CreateNewRecord">
+    tools:context=".NewRecordActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -14,7 +15,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/create_new_record_toolbar"
+            android:id="@+id/attribute_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
@@ -34,7 +35,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_create_new_record" />
+    <include layout="@layout/content_new_record" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/create_new_record_fab"

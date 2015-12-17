@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateNewRecord"
+            android:name=".NewRecordActivity"
             android:label="@string/title_activity_create_new_record"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity">
