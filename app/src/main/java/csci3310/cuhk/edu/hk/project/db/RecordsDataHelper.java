@@ -28,12 +28,23 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
         return RecordTable.TABLE_NAME;
     }
 
+    public List<Record> query() {
+        List<Record> records = new ArrayList<>();
+        Cursor cursor = query(null, null, null, null);
+        if (cursor.moveToFirst()) {
+            records.add(Record.fromCursor(cursor));
+            while (cursor.moveToNext()) {
+                records.add(Record.fromCursor(cursor));
+            }
+        }
+        return records;
+    }
 
     @Override
     public Record query(String id) {
         Record item = null;
         Cursor cursor;
-        cursor = query(null, RecordTable.COLUMN_ID + "= ?",
+        cursor = query(null, RecordTable._ID + "= ?",
                 new String[]{
                         id
                 }, null);
@@ -54,6 +65,12 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
     }
 
     @Override
+    public Uri insert(Record data) {
+        ContentValues values = getContentValues(data);
+        return insert(values);
+    }
+
+    @Override
     public void bulkInsert(List<Record> listData) {
         List<ContentValues> contentValues = new ArrayList<>();
         for (Record record : listData) {
@@ -65,9 +82,13 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
     }
 
     @Override
+    public int delete(String id) {
+        return delete(RecordTable._ID + "= ?", new String[]{id});
+    }
+
+    @Override
     public ContentValues getContentValues(Record data) {
         ContentValues values = new ContentValues();
-        values.put(RecordTable.COLUMN_ID, data.id);
         values.put(RecordTable.COLUMN_AMOUNT, data.amount);
         values.put(RecordTable.COLUMN_CATEGORY, data.category);
         values.put(RecordTable.COLUMN_TYPE, data.type.toString());
@@ -77,6 +98,6 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
 
     @Override
     public CursorLoader getCursorLoader() {
-        return new CursorLoader(getContext(), getContentUri(), null, null, null, RecordTable.COLUMN_ID + " DESC");
+        return new CursorLoader(getContext(), getContentUri(), null, null, null, RecordTable._ID + " DESC");
     }
 }

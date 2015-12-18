@@ -17,6 +17,21 @@
     <string name="user_email">username@example.com</string>
     <string name="title_activity_create_new_record">New</string>
 
+    <string-array name="category">
+        <item>Breakfask</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string-array>
+
+    <string-array name="record_type">
+        <item>
+            Expense
+        </item>
+        <item>
+            Income
+        </item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

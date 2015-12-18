@@ -1,6 +1,7 @@
 package csci3310.cuhk.edu.hk.project.db;
 
 import android.content.ContentValues;
+import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 
 import java.util.List;
@@ -11,7 +12,11 @@ public interface DBInterface<T> {
 
     public int clearAll();
 
+    public Uri insert(T data);
+
     public void bulkInsert(List<T> listData);
+
+    public int delete(String id);
 
     public ContentValues getContentValues(T data);
 

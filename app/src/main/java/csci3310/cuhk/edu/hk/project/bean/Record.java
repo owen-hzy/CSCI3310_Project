@@ -7,7 +7,7 @@ import csci3310.cuhk.edu.hk.project.db.RecordTable;
 public class Record {
 
     public enum RecordType {
-        INCOME, EXPENSE
+        Income, Expense
     }
 
     public int id;
@@ -19,8 +19,7 @@ public class Record {
     public Record() {
     }
 
-    public Record(int id, String category, double amount, RecordType type, String timestamp) {
-        this.id = id;
+    public Record(String category, double amount, RecordType type, String timestamp) {
         this.category = category;
         this.type = type;
         this.timestamp = timestamp;
@@ -29,7 +28,7 @@ public class Record {
 
     public static Record fromCursor(Cursor cursor) {
         Record record = new Record();
-        record.id = cursor.getInt(cursor.getColumnIndex(RecordTable.COLUMN_ID));
+        record.id = cursor.getInt(cursor.getColumnIndex(RecordTable._ID));
         record.amount = cursor.getDouble(cursor.getColumnIndex(RecordTable.COLUMN_AMOUNT));
         record.type = RecordType.valueOf(cursor.getString(cursor.getColumnIndex(RecordTable.COLUMN_TYPE)));
         record.category = cursor.getString(cursor.getColumnIndex(RecordTable.COLUMN_CATEGORY));

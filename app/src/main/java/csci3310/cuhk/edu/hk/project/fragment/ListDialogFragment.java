@@ -28,7 +28,8 @@ public class ListDialogFragment extends AppCompatDialogFragment {
         position = getArguments().getInt(POSITION);
         // Use the Builder for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setItems(new String[]{"1", "2", "3"}, new DialogInterface.OnClickListener() {
+
+        builder.setItems(getListItems(position), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mListener != null) {
@@ -58,5 +59,23 @@ public class ListDialogFragment extends AppCompatDialogFragment {
 
     public interface OnDialogListItemSelectListener {
         void onDialogListItemSelect(int caller_position, int position);
+    }
+
+    public String[] getListItems(int caller_position) {
+        String[] listItems = null;
+        switch (position) {
+            case 0:
+                listItems = new String[] {"1", "2", "3"};
+                break;
+            case 1:
+                listItems = getResources().getStringArray(R.array.record_type);
+                break;
+            case 2:
+                listItems = getResources().getStringArray(R.array.category);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Position: " + position);
+        }
+        return listItems;
     }
 }

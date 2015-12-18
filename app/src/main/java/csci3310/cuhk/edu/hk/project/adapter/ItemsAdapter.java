@@ -1,7 +1,6 @@
 package csci3310.cuhk.edu.hk.project.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,15 +29,16 @@ public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, Cursor cursor) {
         Record item = Record.fromCursor(cursor);
+        ((ItemViewHolder) holder).mIdView.setText(item.id + "");
         ((ItemViewHolder) holder).mCategoryView.setText(item.category);
         ((ItemViewHolder) holder).mCommentView.setText(item.timestamp);
         TextView amountView = ((ItemViewHolder) holder).mAmountView;
-        amountView.setText(item.amount + "");
+        amountView.setText(String.format("%.2f", item.amount));
 
-        if (item.type.equals(Record.RecordType.EXPENSE)) {
+        if (item.type.equals(Record.RecordType.Expense)) {
             amountView.setTextColor(Color.GREEN);
         }
-        else if (item.type.equals(Record.RecordType.INCOME)) {
+        else if (item.type.equals(Record.RecordType.Income)) {
             amountView.setTextColor(Color.RED);
         }
     }
@@ -47,6 +49,9 @@ public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.record_id)
+        TextView mIdView;
+
         @Bind(R.id.record_category)
         TextView mCategoryView;
 

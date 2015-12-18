@@ -22,11 +22,7 @@
         <activity
             android:name=".NewRecordActivity"
             android:label="@string/title_activity_create_new_record"
-            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="csci3310.cuhk.edu.hk.project.MainActivity" />
         </activity>
 
         <provider

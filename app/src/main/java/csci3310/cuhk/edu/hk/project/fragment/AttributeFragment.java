@@ -8,8 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import csci3310.cuhk.edu.hk.project.R;
 
 /**
@@ -24,7 +27,8 @@ public class AttributeFragment extends Fragment {
     public static final String LABEL_STRING_ARRAY = "labelArray";
     public static final String VALUE_STRING_ARRAY = "valueArray";
 
-    private View container_view;
+    @Bind(R.id.attribute_list)
+    RecyclerView mRecyclerView;
     private OnListFragmentInteractionListener mListener;
 
     /**
@@ -49,7 +53,8 @@ public class AttributeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        container_view = inflater.inflate(R.layout.fragment_attribute_list, container, false);
+        View container_view = inflater.inflate(R.layout.fragment_attribute_list, container, false);
+        ButterKnife.bind(this, container_view);
 
         // Set the adapter
         Context context = container_view.getContext();
@@ -82,9 +87,20 @@ public class AttributeFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
     public void updateAttributeValue(int index, String value) {
-        TextView valueView = (TextView) ((RecyclerView) container_view.findViewById(R.id.attribute_list)).getChildAt(index).findViewById(R.id.attribute_value);
+        TextView valueView = (TextView) mRecyclerView.getChildAt(index).findViewById(R.id.attribute_value);
         valueView.setText(value);
+    }
+
+    public String getAttributeValue(int index) {
+        TextView valueView = (TextView) mRecyclerView.getChildAt(index).findViewById(R.id.attribute_value);
+        return valueView.getText().toString();
     }
 
     public interface OnListFragmentInteractionListener {
