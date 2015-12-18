@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:name="csci3310.cuhk.edu.hk.project.fragment.RecordFragment"
+    android:name="csci3310.cuhk.edu.hk.project.fragment.ItemsFragment"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.AttributeFragment">
+    tools:context=".fragment.ItemsFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:background="@color/colorPrimary">
 
         <TextView
-            android:id="@+id/record_header_title"
+            android:id="@+id/item_header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Remaining"
@@ -24,14 +24,14 @@
             android:paddingTop="10dp"/>
 
         <TextView
-            android:id="@+id/record_header_value"
+            android:id="@+id/item_header_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="35dp"
             android:text="$57"
             android:textColor="#FFFFFF"
             android:gravity="center"
-            android:layout_below="@id/record_header_title"
+            android:layout_below="@id/item_header_title"
             android:paddingTop="5dp"/>
 
         <LinearLayout
@@ -66,22 +66,14 @@
 
     </RelativeLayout>
 
-
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/record_list"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--app:layoutManager="LinearLayoutManager"-->
-        <!--tools:listitem="@layout/fragment_attribute"-->
-        <!--android:scrollbars="vertical" />-->
-
-    <ListView
-        android:id="@+id/record_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/item_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="8dp"
-        tools:listitem="@layout/fragment_record" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/fragment_item"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

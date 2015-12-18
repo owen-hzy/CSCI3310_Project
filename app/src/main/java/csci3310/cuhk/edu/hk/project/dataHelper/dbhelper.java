@@ -24,10 +24,10 @@ import java.util.Locale;
 /**
  * Created by csamyphew on 16/12/15.
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class dbhelper extends SQLiteOpenHelper {
 
     //Logcat tag
-    private static final String LOG = DatabaseHelper.class.getName();
+    private static final String LOG = dbhelper.class.getName();
     //Database Version
     private static final int DATABASE_VERSION = 1;
     //Database Name
@@ -45,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_RECORD = "Record";
 
     //Common column names
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_NAME = "name";
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_TYPE = "type";
@@ -53,8 +53,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Subcategory Table - foreign key column names
     private static final String KEY_CAT_ID = "cat_id";
-    private static final String KEY_ID_2 = "subCat_id";
-    private static final String KEY_NAME_2 = "subCat_name";
 
     //Currency Table - column name
     private static final String KEY_RATE = "rate";
@@ -64,9 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Record Table - column names
     private static final String KEY_PRICE = "price";
-    private static final String KEY_ID_3 = "record_id";
     //Record Table - foreign key column names
-    private static final String KEY_RECORD_ID = "record_id";
     private static final String KEY_VENDOR_ID = "vendor_id";
     private static final String KEY_CURR_ID= "curr_id";
     private static final String KEY_PAYMENT_ID = "payment_id";
@@ -80,12 +76,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "UNIQUE (" + KEY_NAME + ") ON CONFLICT REPLACE"
             + ")";
     private static final String CREATE_TABLE_SUBCATEGORY = "CREATE TABLE " + TABLE_SUBCAT + "("
-            + KEY_ID_2 + " INTEGER PRIMARY KEY,"
-            + KEY_NAME_2 + " TEXT NOT NULL,"
+            + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_NAME + " TEXT NOT NULL,"
             + KEY_CREATED_AT + " DATETIME,"
             + KEY_CAT_ID + " INTERGER NOT NULL,"
             + "FOREIGN KEY(" + KEY_CAT_ID + ") REFERENCES " + TABLE_CATEGORY + "(" + KEY_ID + ")" + " ON DELETE SET NULL,"
-            + "UNIQUE (" + KEY_NAME_2 + ") ON CONFLICT REPLACE"
+            + "UNIQUE (" + KEY_NAME + ") ON CONFLICT REPLACE"
             + ")";
     private static final String CREATE_TABLE_BUDGET = "CREATE TABLE " + TABLE_BUDGET + "("
             + KEY_ID + " INTEGER PRIMARY KEY,"
@@ -114,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "UNIQUE (" + KEY_NAME + ") ON CONFLICT REPLACE"
             + ")";
     private static final String CREATE_TABLE_RECORD = "CREATE TABLE " + TABLE_RECORD + "("
-            + KEY_ID_3 + " INTEGER PRIMARY KEY,"
+            + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PRICE + " REAL NOT NULL,"
             + KEY_TYPE + " TEXT NOT NULL,"
             + KEY_CREATED_AT + " DATETIME,"
@@ -123,12 +119,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_PAYMENT_ID + " INTEGER,"
             + KEY_CURR_ID + " INTEGER,"
             + "FOREIGN KEY(" + KEY_VENDOR_ID + ") REFERENCES " + TABLE_VENDOR + "(" + KEY_ID  + ")" + " ON DELETE SET NULL,"
-            + "FOREIGN KEY(" + KEY_SUBCAT_ID + ") REFERENCES " + TABLE_SUBCAT + "(" + KEY_ID_2 + ")" + " ON DELETE SET NULL,"
+            + "FOREIGN KEY(" + KEY_SUBCAT_ID + ") REFERENCES " + TABLE_SUBCAT + "(" + KEY_ID + ")" + " ON DELETE SET NULL,"
             + "FOREIGN KEY(" + KEY_PAYMENT_ID + ") REFERENCES " + TABLE_PAYMENT + "(" + KEY_ID + ")" + " ON DELETE SET NULL,"
             + "FOREIGN KEY(" + KEY_CURR_ID + ") REFERENCES " + TABLE_CURRENCY + "(" + KEY_ID + ")" + " ON DELETE SET NULL" + ")";
 
 
-    public DatabaseHelper(Context context) {
+    public dbhelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override public void onCreate (SQLiteDatabase db) {
@@ -184,7 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME_2, subCat.getName());
+        values.put(KEY_NAME, subCat.getName());
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(KEY_CAT_ID, cat_id);
 
@@ -324,7 +320,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public Subcategory getSubCategory(long subCat_id){
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_SUBCAT + " WHERE " + KEY_ID_2 + " = " + subCat_id;
+        String selectQuery = "SELECT * FROM " + TABLE_SUBCAT + " WHERE " + KEY_ID + " = " + subCat_id;
         Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -333,8 +329,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         Subcategory subCat = new Subcategory();
-        subCat.setId(c.getInt(c.getColumnIndex(KEY_ID_2)));
-        subCat.setName(c.getString(c.getColumnIndex(KEY_NAME_2)));
+        subCat.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        subCat.setName(c.getString(c.getColumnIndex(KEY_NAME)));
 
         return subCat;
     }
@@ -349,8 +345,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Subcategory subCat = new Subcategory();
-                subCat.setId(c.getInt(c.getColumnIndex(KEY_ID_2)));
-                subCat.setName(c.getString(c.getColumnIndex(KEY_NAME_2)));
+                subCat.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                subCat.setName(c.getString(c.getColumnIndex(KEY_NAME)));
 
                 subcategories.add(subCat);
             }
@@ -371,8 +367,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Subcategory subCat = new Subcategory();
-                subCat.setId(c.getInt(c.getColumnIndex(KEY_ID_2)));
-                subCat.setName(c.getString(c.getColumnIndex(KEY_NAME_2)));
+                subCat.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                subCat.setName(c.getString(c.getColumnIndex(KEY_NAME)));
 
                 subcategories.add(subCat);
             }
@@ -590,7 +586,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public Record getRecord(long record_id){
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_RECORD + " WHERE " + KEY_ID_3 + " = " + record_id;
+        String selectQuery = "SELECT * FROM " + TABLE_RECORD + " WHERE " + KEY_ID + " = " + record_id;
         Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -599,7 +595,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         Record record = new Record();
-        record.setId(c.getInt(c.getColumnIndex(KEY_ID_3)));
+        record.setId(c.getInt(c.getColumnIndex(KEY_ID)));
         record.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
         record.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
         record.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
@@ -617,7 +613,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Record record = new Record();
-                record.setId(c.getInt(c.getColumnIndex(KEY_ID_3)));
+                record.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 record.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
                 record.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
                 record.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
@@ -640,7 +636,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Record record = new Record();
-                record.setId(c.getInt(c.getColumnIndex(KEY_ID_3)));
+                record.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 record.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
                 record.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
                 record.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
@@ -654,8 +650,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Record> getAllRecordsBySubcat (String subCat_name) {
         List<Record> records = new ArrayList<Record>();
         String selectQuery = "SELECT * FROM " + TABLE_RECORD + " record, " + TABLE_SUBCAT + " subcat "
-                + " WHERE subcat." + KEY_NAME_2 + " = '" + subCat_name + "'"
-                + " AND record." + KEY_SUBCAT_ID + " = " + "subcat." + KEY_ID_2;
+                + " WHERE subcat." + KEY_NAME + " = '" + subCat_name + "'"
+                + " AND record." + KEY_SUBCAT_ID + " = " + "subcat." + KEY_ID;
         Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -663,7 +659,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Record record = new Record();
-                record.setId(c.getInt(c.getColumnIndex(KEY_ID_3)));
+                record.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 record.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
                 record.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
                 record.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
@@ -686,7 +682,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Record record = new Record();
-                record.setId(c.getInt(c.getColumnIndex(KEY_ID_3)));
+                record.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 record.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
                 record.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
                 record.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
@@ -709,7 +705,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()) {
             do{
                 Record record = new Record();
-                record.setId(c.getInt(c.getColumnIndex(KEY_ID_3)));
+                record.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 record.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
                 record.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
                 record.setCreated_at(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
