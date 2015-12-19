@@ -6,7 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +22,7 @@ import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
 import csci3310.cuhk.edu.hk.project.fragment.AttributeFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ListDialogFragment;
 
-public class NewRecordActivity extends AppCompatActivity implements AttributeFragment.OnListFragmentInteractionListener, ListDialogFragment.OnDialogListItemSelectListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class RecordActivity extends AppCompatActivity implements AttributeFragment.OnListFragmentInteractionListener, ListDialogFragment.OnDialogListItemSelectListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private String[] labelArray = new String[] {
             "Account",
@@ -79,7 +79,7 @@ public class NewRecordActivity extends AppCompatActivity implements AttributeFra
                     return;
                 }
                 mDataHelper.insert(record);
-                Intent intent = new Intent(NewRecordActivity.this, MainActivity.class);
+                Intent intent = new Intent(RecordActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -102,7 +102,11 @@ public class NewRecordActivity extends AppCompatActivity implements AttributeFra
         record.type = Record.RecordType.valueOf(getAttributeFragment().getAttributeValue(1));
         record.category = getAttributeFragment().getAttributeValue(2);
         record.timestamp = getAttributeFragment().getAttributeValue(3) + " " + getAttributeFragment().getAttributeValue(4);
-        record.amount = Double.valueOf(amountView.getText().toString());
+        if (TextUtils.isEmpty(amountView.getText())) {
+            record.amount = Double.valueOf(0.0);
+        } else {
+            record.amount = Double.valueOf(amountView.getText().toString());
+        }
 
         return record;
     }
