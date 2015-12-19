@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface DBInterface<T> {
 
+    public List<T> query();
+
     public T query(String id);
 
     public int clearAll();

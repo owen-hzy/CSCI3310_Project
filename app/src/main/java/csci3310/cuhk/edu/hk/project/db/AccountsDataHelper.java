@@ -10,50 +10,40 @@ import android.support.v4.content.CursorLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import csci3310.cuhk.edu.hk.project.bean.Record;
+import csci3310.cuhk.edu.hk.project.bean.Account;
 
-public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Record> {
+public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Account> {
 
-    public RecordsDataHelper(Context context) {
+    public AccountsDataHelper(Context context) {
         super(context);
     }
 
     @Override
     protected Uri getContentUri() {
-        return DataProvider.getContentUri(RecordTable.TABLE_NAME);
+        return DataProvider.getContentUri(AccountTable.TABLE_NAME);
     }
 
     @Override
     protected String getTableName() {
-        return RecordTable.TABLE_NAME;
+        return AccountTable.TABLE_NAME;
     }
 
     @Override
-    public List<Record> query() {
-        List<Record> records = new ArrayList<>();
+    public List<Account> query() {
+        List<Account> accounts = new ArrayList<>();
         Cursor cursor = query(null, null, null, null);
         if (cursor.moveToFirst()) {
-            records.add(Record.fromCursor(cursor));
+            accounts.add(Account.fromCursor(cursor));
             while (cursor.moveToNext()) {
-                records.add(Record.fromCursor(cursor));
+                accounts.add(Account.fromCursor(cursor));
             }
         }
-        return records;
+        return accounts;
     }
 
     @Override
-    public Record query(String id) {
-        Record item = null;
-        Cursor cursor;
-        cursor = query(null, RecordTable._ID + "= ?",
-                new String[]{
-                        id
-                }, null);
-        if (cursor.moveToFirst()) {
-            item = Record.fromCursor(cursor);
-        }
-        cursor.close();
-        return item;
+    public Account query(String id) {
+        return null;
     }
 
     @Override
@@ -66,16 +56,16 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
     }
 
     @Override
-    public Uri insert(Record data) {
+    public Uri insert(Account data) {
         ContentValues values = getContentValues(data);
         return insert(values);
     }
 
     @Override
-    public void bulkInsert(List<Record> listData) {
+    public void bulkInsert(List<Account> listData) {
         List<ContentValues> contentValues = new ArrayList<>();
-        for (Record record : listData) {
-            ContentValues values = getContentValues(record);
+        for (Account account : listData) {
+            ContentValues values = getContentValues(account);
             contentValues.add(values);
         }
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
@@ -84,21 +74,20 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
 
     @Override
     public int delete(String id) {
-        return delete(RecordTable._ID + "= ?", new String[]{id});
+        return delete(AccountTable._ID + "= ?", new String[] { id });
     }
 
     @Override
-    public ContentValues getContentValues(Record data) {
+    public ContentValues getContentValues(Account data) {
         ContentValues values = new ContentValues();
-        values.put(RecordTable.COLUMN_AMOUNT, data.amount);
-        values.put(RecordTable.COLUMN_CATEGORY, data.category);
-        values.put(RecordTable.COLUMN_TYPE, data.type.toString());
-        values.put(RecordTable.COLUMN_TIMESTAMP, data.timestamp);
+        values.put(AccountTable.COLUMN_NAME, data.name);
+        values.put(AccountTable.COLUMN_VALUE, data.value);
+
         return values;
     }
 
     @Override
     public CursorLoader getCursorLoader() {
-        return new CursorLoader(getContext(), getContentUri(), null, null, null, RecordTable._ID + " DESC");
+        return new CursorLoader(getContext(), getContentUri(), null, null, null, AccountTable._ID + " DESC");
     }
 }

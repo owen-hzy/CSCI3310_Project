@@ -23,6 +23,8 @@ public class DataProvider extends ContentProvider {
 
     private static final int RECORD = 1;
     private static final int RECORD_ID = 2;
+    private static final int ACCOUNT = 3;
+    private static final int ACCOUNT_ID = 4;
 
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -38,6 +40,8 @@ public class DataProvider extends ContentProvider {
     static {
         uriMatcher.addURI(AUTHORITY, "record", RECORD);
         uriMatcher.addURI(AUTHORITY, "record/#", RECORD_ID);
+        uriMatcher.addURI(AUTHORITY, "account", ACCOUNT);
+        uriMatcher.addURI(AUTHORITY, "account/#", ACCOUNT_ID);
     }
 
     public static Uri getContentUri(String table) {
@@ -52,6 +56,9 @@ public class DataProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case RECORD://Demo列表
                 table = RecordTable.TABLE_NAME;
+                break;
+            case ACCOUNT:
+                table = AccountTable.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Uri" + uri);
@@ -174,7 +181,7 @@ public class DataProvider extends ContentProvider {
 
         private static final String DB_NAME = "budgetPlanner.db";
 
-        private static final int DB_VERSION = 1;
+        private static final int DB_VERSION = 2;
 
         private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -183,11 +190,13 @@ public class DataProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             RecordTable.TABLE.create(db);
+            AccountTable.TABLE.create(db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + RecordTable.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AccountTable.TABLE_NAME);
 
             onCreate(db);
         }

@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,6 +17,8 @@ import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.bean.Record;
 
 public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder> {
+
+
     private final LayoutInflater mLayoutInflater;
 
     public ItemsAdapter(Context context) {
@@ -71,8 +71,8 @@ public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.
 
         @OnClick(R.id.record_item)
         void onItemClick() {
-            Log.d("ItemViewHolder", "onClick--> position = " + getLayoutPosition());
-            Record item = Record.fromCursor((Cursor) mAdapter.getItem(getLayoutPosition()));
+            Log.d("ItemViewHolder", "onClick--> position = " + getAdapterPosition());
+            Record item = Record.fromCursor((Cursor) mAdapter.getItem(getAdapterPosition()));
 //            if (getPosition() < 11) {
 //                Intent intent = new Intent(mAdapter.mContext, DetailActivity.class);
 //                intent.putExtra("position", getPosition());

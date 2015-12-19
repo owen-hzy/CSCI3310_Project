@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="csci3310.cuhk.edu.hk.project">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".app.AppApplication"
         android:allowBackup="true"
@@ -22,14 +27,17 @@
         <activity
             android:name=".NewRecordActivity"
             android:label="@string/title_activity_create_new_record"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <provider
             android:name=".db.DataProvider"
             android:authorities="csci3310.cuhk.edu.hk.project.db"
             android:enabled="true"
-            android:exported="false"></provider>
+            android:exported="false" />
+
+        <activity
+            android:name=".NewAccountActivity"
+            android:label="@string/title_activity_new_account"></activity>
     </application>
 
 </manifest>

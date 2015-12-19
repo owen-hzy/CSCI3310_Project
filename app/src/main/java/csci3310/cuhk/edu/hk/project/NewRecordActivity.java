@@ -135,14 +135,14 @@ public class NewRecordActivity extends AppCompatActivity implements AttributeFra
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+        String date = year + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
         Log.w(this.getLocalClassName(), "You picked the following date: " + date);
         getAttributeFragment().updateAttributeValue(3, date);
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-        String time = hourOfDay + ":" + minute;
+        String time = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute);
         Log.w(this.getLocalClassName(), "You picked the following time: " + time);
         getAttributeFragment().updateAttributeValue(4, time);
     }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Today), "items").commit();
         }
     }
 
@@ -101,19 +100,23 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_today) {
             actionBar.setTitle(getString(R.string.today));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ItemsFragment(), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Today), "items").commit();
         } else if (id == R.id.nav_week) {
             actionBar.setTitle(getString(R.string.week));
             // TODO: Retrieve database records to determine which fragment to show
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Week), "items").commit();
         } else if (id == R.id.nav_month) {
             actionBar.setTitle(getString(R.string.month));
             // TODO: Retrieve database records to determine which fragment to show
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Month), "items").commit();
         } else if (id == R.id.nav_year) {
             actionBar.setTitle(getString(R.string.year));
             // TODO: Retrieve database records to determine which fragment to show
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Year), "items").commit();
         } else if (id == R.id.nav_account) {
             actionBar.setTitle(getString(R.string.account));
             // TODO: Retrieve database records to determine which fragment to show
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Account), "items").commit();
         } else if (id == R.id.nav_summary) {
             actionBar.setTitle(getString(R.string.summary));
             // TODO: Retrieve database records to determine which fragment to show
