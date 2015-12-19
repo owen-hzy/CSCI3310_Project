@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -14,11 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import csci3310.cuhk.edu.hk.project.fragment.EmptyFragment;
+import csci3310.cuhk.edu.hk.project.fragment.ConfirmFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ConfirmFragment.OnDialogButtonClickListener {
 
     private ActionBar actionBar;
 
@@ -57,8 +58,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             // TODO: Retrieve database records to determine which fragment to show
-//            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, EmptyFragment.newInstance("No Record For Today")).commit();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(), "items").commit();
         }
     }
 
@@ -101,35 +101,40 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_today) {
             actionBar.setTitle(getString(R.string.today));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Today")).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ItemsFragment(), "items").commit();
         } else if (id == R.id.nav_week) {
             actionBar.setTitle(getString(R.string.week));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Week")).commit();
         } else if (id == R.id.nav_month) {
             actionBar.setTitle(getString(R.string.month));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Month")).commit();
         } else if (id == R.id.nav_year) {
             actionBar.setTitle(getString(R.string.year));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Year")).commit();
         } else if (id == R.id.nav_account) {
             actionBar.setTitle(getString(R.string.account));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Account")).commit();
         } else if (id == R.id.nav_summary) {
             actionBar.setTitle(getString(R.string.summary));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Summary")).commit();
         } else if (id == R.id.nav_budget) {
             actionBar.setTitle(getString(R.string.budget));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, EmptyFragment.newInstance("No Record For Budget")).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    public void OnDialogButtonClick(String recordId, int recordPosition, Boolean confirm) {
+        ItemsFragment itemsFragment = (ItemsFragment) getSupportFragmentManager().findFragmentByTag("items");
+        if (confirm) {
+            itemsFragment.deleteItem(recordId, recordPosition);
+        } else {
+            itemsFragment.cancel(recordPosition);
+        }
     }
 }

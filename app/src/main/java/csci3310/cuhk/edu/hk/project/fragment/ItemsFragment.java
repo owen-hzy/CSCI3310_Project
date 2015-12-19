@@ -1,6 +1,7 @@
 package csci3310.cuhk.edu.hk.project.fragment;
 
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,15 +10,14 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -26,9 +26,11 @@ import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.adapter.ItemsAdapter;
 import csci3310.cuhk.edu.hk.project.bean.Record;
 import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
-import csci3310.cuhk.edu.hk.project.utils.DateTimeUtils;
 
 public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final String RECORD_ID = "record_id";
+    public static final String RECORD_POSITION = "record_position";
 
     @Bind(R.id.item_list)
     RecyclerView mRecyclerView;
@@ -41,6 +43,9 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Bind(R.id.expense_summary)
     TextView mExpenseValue;
+
+    @Bind(R.id.empty_container)
+    LinearLayout mEmptyContainer;
 
     private RecordsDataHelper mDataHelper;
     private ItemsAdapter mAdapter;
@@ -57,13 +62,26 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             String recordId = ((TextView) mRecyclerView.getChildAt(viewHolder.getAdapterPosition()).findViewById(R.id.record_id)).getText().toString();
-            mDataHelper.delete(recordId);
-            mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-            mAdapter.notifyDataSetChanged();
-
-            updateSummary();
+            ConfirmFragment confirmFragment = new ConfirmFragment();
+            Bundle args = new Bundle();
+            args.putString(RECORD_ID, recordId);
+            args.putInt(RECORD_POSITION, viewHolder.getAdapterPosition());
+            confirmFragment.setArguments(args);
+            confirmFragment.show(getFragmentManager(), "confirm");
         }
     });
+
+    public void deleteItem(String recordId, int position) {
+        mDataHelper.delete(recordId);
+        mAdapter.notifyItemRemoved(position);
+        mAdapter.notifyDataSetChanged();
+
+        updateSummary();
+    }
+
+    public void cancel(int position) {
+        mAdapter.notifyItemChanged(position);
+    }
 
 
     public ItemsFragment() {
@@ -137,6 +155,11 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data == null || data.getCount() == 0) {
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyContainer.setVisibility(View.VISIBLE);
+            ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For Today");
+        }
         mAdapter.changeCursor(data);
     }
 
@@ -156,6 +179,5 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
 //        records.add(new Record("Lunch", 0.0, Record.RecordType.Expense, DateTimeUtils.getString(null)));
 //        mDataHelper.bulkInsert(records);
 //    }
-
 
 }
