@@ -52,7 +52,7 @@ public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.record_id)
+        @Bind(R.id.item_id)
         TextView mIdView;
 
         @Bind(R.id.record_category)

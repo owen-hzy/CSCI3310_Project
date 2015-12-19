@@ -10,7 +10,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +23,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import csci3310.cuhk.edu.hk.project.NewAccountActivity;
+import csci3310.cuhk.edu.hk.project.AccountActivity;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.adapter.AccountsAdapter;
 import csci3310.cuhk.edu.hk.project.adapter.BaseAbstractRecycleCursorAdapter;
@@ -51,8 +50,8 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    public static final String RECORD_ID = "record_id";
-    public static final String RECORD_POSITION = "record_position";
+    public static final String ITEM_ID = "item_id";
+    public static final String ITEM_POSITION = "item_position";
     public static final String LIST_TYPE = "list_type";
 
     @Bind(R.id.item_list)
@@ -87,18 +86,18 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            String recordId = ((TextView) mRecyclerView.getChildAt(viewHolder.getAdapterPosition()).findViewById(R.id.record_id)).getText().toString();
+            String itemId = ((TextView) mRecyclerView.getChildAt(viewHolder.getAdapterPosition()).findViewById(R.id.item_id)).getText().toString();
             ConfirmFragment confirmFragment = new ConfirmFragment();
             Bundle args = new Bundle();
-            args.putString(RECORD_ID, recordId);
-            args.putInt(RECORD_POSITION, viewHolder.getAdapterPosition());
+            args.putString(ITEM_ID, itemId);
+            args.putInt(ITEM_POSITION, viewHolder.getAdapterPosition());
             confirmFragment.setArguments(args);
             confirmFragment.show(getFragmentManager(), "confirm");
         }
     });
 
-    public void deleteItem(String recordId, int position) {
-        mDataHelper.delete(recordId);
+    public void deleteItem(String itemId, int position) {
+        mDataHelper.delete(itemId);
         mAdapter.notifyItemRemoved(position);
         mAdapter.notifyDataSetChanged();
 
@@ -164,6 +163,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             case Account:
                 mAdapter = new AccountsAdapter(getActivity());
                 mRecyclerView.setAdapter(mAdapter);
+                mItemTouchHelper.attachToRecyclerView(mRecyclerView);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown List Type: " + mListType.toString());
@@ -269,7 +269,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         int id = item.getItemId();
 
         if (id == R.id.menu_new_account) {
-            Intent intent = new Intent(getActivity(), NewAccountActivity.class);
+            Intent intent = new Intent(getActivity(), AccountActivity.class);
             startActivity(intent);
             return true;
         }

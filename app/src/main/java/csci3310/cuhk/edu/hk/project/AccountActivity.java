@@ -1,6 +1,7 @@
 package csci3310.cuhk.edu.hk.project;
 
 import android.content.Intent;
+import android.database.SQLException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import csci3310.cuhk.edu.hk.project.bean.Account;
+import csci3310.cuhk.edu.hk.project.db.AccountTable;
 import csci3310.cuhk.edu.hk.project.db.AccountsDataHelper;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 
@@ -25,6 +27,8 @@ public class AccountActivity extends AppCompatActivity {
     EditText mNameView;
 
     private AccountsDataHelper mDataHelper;
+    private boolean newAccountFlag = true;
+    private int accountId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,15 @@ public class AccountActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.account_toolbar);
         setSupportActionBar(toolbar);
+
+        if (getIntent().getExtras() == null) {
+            newAccountFlag = true;
+        } else {
+            newAccountFlag = false;
+            accountId = getIntent().getExtras().getInt(AccountTable._ID);
+            mNameView.setText(getIntent().getExtras().getString(AccountTable.COLUMN_NAME));
+            mValueView.setText(getIntent().getExtras().getString(AccountTable.COLUMN_VALUE));
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_new_account_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +67,22 @@ public class AccountActivity extends AppCompatActivity {
                     account.value = Double.valueOf(mValueView.getText().toString());
                 }
 
-                mDataHelper.insert(account);
+                if (newAccountFlag) {
+                    try {
+                        mDataHelper.insert(account);
+                    } catch (SQLException e) {
+                        Snackbar.make(v, "Name already exists", Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+                } else {
+                    account.id = accountId;
+                    try {
+                        mDataHelper.update(account);
+                    } catch (SQLException e) {
+                        Snackbar.make(v, "Name already exists", Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+                }
 
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Account.toString());

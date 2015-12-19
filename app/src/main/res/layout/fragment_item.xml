@@ -5,7 +5,7 @@
     android:layout_height="72dp">
 
     <TextView
-        android:id="@+id/record_id"
+        android:id="@+id/item_id"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:visibility="gone" />

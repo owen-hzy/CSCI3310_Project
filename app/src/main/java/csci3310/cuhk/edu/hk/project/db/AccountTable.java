@@ -13,6 +13,6 @@ public class AccountTable implements BaseColumns {
     public static final String COLUMN_VALUE = "value";
 
     public static final SQLiteTable TABLE = new SQLiteTable(TABLE_NAME)
-            .addColumn(COLUMN_NAME, Column.Constraint.NOT_NULL, Column.DataType.TEXT)
+            .addColumn(COLUMN_NAME, Column.Constraint.UNIQUE, Column.DataType.TEXT)
             .addColumn(COLUMN_VALUE, Column.DataType.REAL);
  }

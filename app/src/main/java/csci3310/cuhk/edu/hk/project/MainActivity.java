@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().getExtras() == null) {
             mListType = ItemsFragment.ListType.Today;
         } else {
-            mListType = ItemsFragment.ListType.valueOf(getIntent().getExtras().getString(ItemsFragment.LIST_TYPE));
+            mListType = ItemsFragment.ListType.valueOf(getIntent().getExtras().getString(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Today.toString()));
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.new_fab);
@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void OnDialogButtonClick(String recordId, int recordPosition, Boolean confirm) {
+    public void OnDialogButtonClick(String itemId, int itemPosition, Boolean confirm) {
         ItemsFragment itemsFragment = (ItemsFragment) getSupportFragmentManager().findFragmentByTag("items");
         if (confirm) {
-            itemsFragment.deleteItem(recordId, recordPosition);
+            itemsFragment.deleteItem(itemId, itemPosition);
         } else {
-            itemsFragment.cancel(recordPosition);
+            itemsFragment.cancel(itemPosition);
         }
     }
 }
