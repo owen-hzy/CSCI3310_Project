@@ -18,6 +18,8 @@ public interface DBInterface<T> {
 
     public void bulkInsert(List<T> listData);
 
+    public int update(T data);
+
     public int delete(String id);
 
     public ContentValues getContentValues(T data);

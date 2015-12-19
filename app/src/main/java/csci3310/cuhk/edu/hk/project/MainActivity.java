@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConfirmFragment.OnDialogButtonClickListener {
 
     private ActionBar actionBar;
+    private ItemsFragment.ListType mListType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +32,17 @@ public class MainActivity extends AppCompatActivity
         actionBar = getSupportActionBar();
         actionBar.setTitle("Today");
 
+        if (getIntent().getExtras() == null) {
+            mListType = ItemsFragment.ListType.Today;
+        } else {
+            mListType = ItemsFragment.ListType.valueOf(getIntent().getExtras().getString(ItemsFragment.LIST_TYPE));
+        }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.new_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewRecordActivity.class);
+                Intent intent = new Intent(MainActivity.this, RecordActivity.class);
                 startActivity(intent);
             }
         });
@@ -57,7 +64,9 @@ public class MainActivity extends AppCompatActivity
             }
 
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Today), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    ItemsFragment.newInstance(mListType), "items").commit();
+            actionBar.setTitle(mListType.toString());
         }
     }
 

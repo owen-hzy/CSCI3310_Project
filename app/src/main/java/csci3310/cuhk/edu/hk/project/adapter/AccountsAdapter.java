@@ -13,6 +13,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.bean.Account;
 
@@ -59,10 +60,16 @@ public class AccountsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerVi
             ButterKnife.bind(this, view);
         }
 
+        @OnLongClick(R.id.account_item)
+        boolean onItemLongClick() {
+            Log.d("AccountViewHolder", "onLongClick--> position = " + getAdapterPosition());
+//            Account account = Account.fromCursor((Cursor) mAdapter.getItem(getAdapterPosition()));
+            return true;
+        }
+
         @OnClick(R.id.account_item)
         void onItemClick() {
-            Log.d("AccountViewHolder", "onClick--> position = " + getAdapterPosition());
-            Account account = Account.fromCursor((Cursor) mAdapter.getItem(getAdapterPosition()));
+            Log.d("AccountViewHolder", "onClick --> position = " + getAdapterPosition());
         }
     }
 }

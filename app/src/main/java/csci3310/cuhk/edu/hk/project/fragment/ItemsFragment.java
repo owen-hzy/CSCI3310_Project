@@ -1,6 +1,7 @@
 package csci3310.cuhk.edu.hk.project.fragment;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import csci3310.cuhk.edu.hk.project.NewAccountActivity;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.adapter.AccountsAdapter;
 import csci3310.cuhk.edu.hk.project.adapter.BaseAbstractRecycleCursorAdapter;
@@ -267,7 +269,8 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         int id = item.getItemId();
 
         if (id == R.id.menu_new_account) {
-            Log.d(this.getClass().getName(), "New Account Clicked");
+            Intent intent = new Intent(getActivity(), NewAccountActivity.class);
+            startActivity(intent);
             return true;
         }
 

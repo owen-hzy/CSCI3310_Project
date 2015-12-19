@@ -2,44 +2,58 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/attribute_coordinator_layout_container"
+    android:id="@+id/account_coordinator_layout_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".RecordActivity">
+    tools:context=".NewAccountActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="250dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/attribute_toolbar"
+            android:id="@+id/account_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <EditText
-            android:id="@+id/new_record_amount"
+            android:id="@+id/new_account_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="0.00"
+            android:hint="Initial Value"
             android:textSize="40dp"
             android:gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             android:background="@color/transparent"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:paddingBottom="30dp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Account Name"
+            android:textSize="20dp"
+            android:paddingLeft="30dp" />
+
+        <EditText
+            android:id="@+id/new_account_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:textSize="35dp"
+            android:background="@color/transparent"
+            android:paddingLeft="30dp"
+            android:maxLines="1"
+            android:singleLine="true" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_new_record" />
-
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/create_new_record_fab"
+        android:id="@+id/create_new_account_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

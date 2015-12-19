@@ -73,6 +73,12 @@ public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Ac
     }
 
     @Override
+    public int update(Account data) {
+        ContentValues values = getContentValues(data);
+        return update(values, AccountTable._ID + " = ?", new String[] { data.id + ""});
+    }
+
+    @Override
     public int delete(String id) {
         return delete(AccountTable._ID + "= ?", new String[] { id });
     }

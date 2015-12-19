@@ -1,6 +1,7 @@
 package csci3310.cuhk.edu.hk.project.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import csci3310.cuhk.edu.hk.project.R;
+import csci3310.cuhk.edu.hk.project.RecordActivity;
 import csci3310.cuhk.edu.hk.project.bean.Record;
+import csci3310.cuhk.edu.hk.project.db.RecordTable;
 
 public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder> {
 
@@ -73,17 +76,13 @@ public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.
         void onItemClick() {
             Log.d("ItemViewHolder", "onClick--> position = " + getAdapterPosition());
             Record item = Record.fromCursor((Cursor) mAdapter.getItem(getAdapterPosition()));
-//            if (getPosition() < 11) {
-//                Intent intent = new Intent(mAdapter.mContext, DetailActivity.class);
-//                intent.putExtra("position", getPosition());
-//                intent.putExtra("title", item.title);
-//                mAdapter.mContext.startActivity(intent);
-//            } else {
-//                Intent intent = new Intent(mAdapter.mContext, SelectActivity.class);
-//                intent.putExtra("position", getPosition());
-//                intent.putExtra("title", item.title);
-//                mAdapter.mContext.startActivity(intent);
-//            }
+            Intent intent = new Intent(mAdapter.mContext, RecordActivity.class);
+            intent.putExtra(RecordTable._ID, item.id);
+            intent.putExtra(RecordTable.COLUMN_AMOUNT, item.amount + "");
+            intent.putExtra(RecordTable.COLUMN_CATEGORY, item.category);
+            intent.putExtra(RecordTable.COLUMN_TYPE, item.type.toString());
+            intent.putExtra(RecordTable.COLUMN_TIMESTAMP, item.timestamp);
+            mAdapter.mContext.startActivity(intent);
         }
     }
 }

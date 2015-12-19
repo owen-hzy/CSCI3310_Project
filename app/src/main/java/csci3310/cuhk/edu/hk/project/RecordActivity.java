@@ -18,6 +18,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 
 import csci3310.cuhk.edu.hk.project.bean.Record;
+import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
 import csci3310.cuhk.edu.hk.project.fragment.AttributeFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ListDialogFragment;
@@ -32,7 +33,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             "Time"
     };
 
-    private String[] defaultValueArray = new String[] {
+    private String[] valueArray = new String[] {
             "No Account",
             "No Type",
             "No Category",
@@ -50,6 +51,8 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
 
     private RecordsDataHelper mDataHelper;
     private EditText amountView;
+    private boolean newRecordFlag = true;
+    private int recordId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +64,20 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         amountView = (EditText) findViewById(R.id.new_record_amount);
         // TODO: May add some filter to limit decimal length
 
-        Calendar calendar = Calendar.getInstance();
-        defaultValueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+        if (getIntent().getExtras() == null) {
+            newRecordFlag = true;
+            Calendar calendar = Calendar.getInstance();
+            valueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+        } else {
+            newRecordFlag = false;
+            amountView.setText(getIntent().getExtras().getString(RecordTable.COLUMN_AMOUNT));
+            recordId = getIntent().getExtras().getInt(RecordTable._ID);
+            valueArray[1] = getIntent().getExtras().getString(RecordTable.COLUMN_TYPE);
+            valueArray[2] = getIntent().getExtras().getString(RecordTable.COLUMN_CATEGORY);
+            String dateTime = getIntent().getExtras().getString(RecordTable.COLUMN_TIMESTAMP);
+            valueArray[3] = dateTime.split(" ")[0];
+            valueArray[4] = dateTime.split(" ")[1];
+        }
 
         setSupportActionBar(toolbar);
 
@@ -72,13 +87,18 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             public void onClick(View v) {
                 Record record = null;
                 try {
-                    record = createRecord();
+                    if (newRecordFlag) {
+                        record = createRecord();
+                        mDataHelper.insert(record);
+                    } else {
+                        record = createRecord(recordId);
+                        mDataHelper.update(record);
+                    }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                     Snackbar.make(v, "Please Select Record Type", Snackbar.LENGTH_LONG).show();
                     return;
                 }
-                mDataHelper.insert(record);
                 Intent intent = new Intent(RecordActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -86,7 +106,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, AttributeFragment.newInstance(labelArray, defaultValueArray, iconArray), "attributeList").commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, AttributeFragment.newInstance(labelArray, valueArray, iconArray), "attributeList").commit();
     }
 
     public void showListDialog(int attribute_position) {
@@ -108,6 +128,12 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             record.amount = Double.valueOf(amountView.getText().toString());
         }
 
+        return record;
+    }
+
+    private Record createRecord(int id) {
+        Record record = createRecord();
+        record.id = id;
         return record;
     }
 

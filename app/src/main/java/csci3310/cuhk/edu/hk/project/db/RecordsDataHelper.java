@@ -71,6 +71,8 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
         return insert(values);
     }
 
+
+
     @Override
     public void bulkInsert(List<Record> listData) {
         List<ContentValues> contentValues = new ArrayList<>();
@@ -80,6 +82,12 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
         }
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
         bulkInsert(contentValues.toArray(valueArray));
+    }
+
+    @Override
+    public int update(Record data) {
+        ContentValues values = getContentValues(data);
+        return update(values, RecordTable._ID + " = ?", new String[] { data.id + "" });
     }
 
     @Override
