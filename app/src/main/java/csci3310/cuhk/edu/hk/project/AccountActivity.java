@@ -16,7 +16,7 @@ import csci3310.cuhk.edu.hk.project.bean.Account;
 import csci3310.cuhk.edu.hk.project.db.AccountsDataHelper;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 
-public class NewAccountActivity extends AppCompatActivity {
+public class AccountActivity extends AppCompatActivity {
 
     @Bind(R.id.new_account_amount)
     EditText mValueView;
@@ -33,7 +33,7 @@ public class NewAccountActivity extends AppCompatActivity {
         mDataHelper = new AccountsDataHelper(this);
 
         setContentView(R.layout.activity_new_account);
-        ButterKnife.bind(this, NewAccountActivity.this);
+        ButterKnife.bind(this, AccountActivity.this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.account_toolbar);
         setSupportActionBar(toolbar);
@@ -56,7 +56,7 @@ public class NewAccountActivity extends AppCompatActivity {
 
                 mDataHelper.insert(account);
 
-                Intent intent = new Intent(NewAccountActivity.this, MainActivity.class);
+                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Account.toString());
                 startActivity(intent);
             }
