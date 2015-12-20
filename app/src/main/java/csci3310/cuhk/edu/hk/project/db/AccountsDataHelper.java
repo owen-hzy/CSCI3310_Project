@@ -75,7 +75,7 @@ public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Ac
     @Override
     public int update(Account data) {
         ContentValues values = getContentValues(data);
-        return update(values, AccountTable._ID + " = ?", new String[] { data.id + ""});
+        return update(values, AccountTable._ID + " = ?", new String[]{data.id + ""});
     }
 
     @Override
@@ -93,7 +93,9 @@ public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Ac
     }
 
     @Override
-    public CursorLoader getCursorLoader() {
-        return new CursorLoader(getContext(), getContentUri(), null, null, null, AccountTable._ID + " DESC");
+    public CursorLoader getCursorLoader(String selection, String[] selectionArgs) {
+        return new CursorLoader(getContext(), getContentUri(), null, selection, selectionArgs, AccountTable._ID + " DESC");
     }
+
+
 }

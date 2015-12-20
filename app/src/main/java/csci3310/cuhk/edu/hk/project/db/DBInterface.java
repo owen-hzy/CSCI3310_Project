@@ -24,6 +24,6 @@ public interface DBInterface<T> {
 
     public ContentValues getContentValues(T data);
 
-    public CursorLoader getCursorLoader();
+    public CursorLoader getCursorLoader(String selection, String[] selectionArgs);
 
 }

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -101,7 +102,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         mAdapter.notifyItemRemoved(position);
         mAdapter.notifyDataSetChanged();
 
-        updateSummary();
+//        updateSummary();
     }
 
     public void cancel(int position) {
@@ -175,11 +176,9 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(0, null, this);
-
-        updateSummary();
     }
 
-    private void updateSummary() {
+    private void updateSummary(Cursor cursor) {
 
         Double summary_amount = 0.0;
 
@@ -190,18 +189,9 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             Double expense_amount = 0.0;
 
             List<Record> records = null;
-            switch (mListType) {
-                case Today:
-                case Week:
-                case Month:
-                case Year:
-                    records = mDataHelper.query();
-                    break;
-                default:
-                    break;
-            }
 
-            for (Record record : records) {
+            if (cursor.moveToFirst()) {
+                Record record = Record.fromCursor(cursor);
                 if (record.type.equals(Record.RecordType.Expense)) {
                     summary_amount -= record.amount;
                     expense_amount += record.amount;
@@ -212,27 +202,70 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
                 } else {
                     throw new IllegalArgumentException("Unknown Record Type" + record.type.toString());
                 }
+                while (cursor.moveToNext()) {
+                    record = Record.fromCursor(cursor);
+
+                    if (record.type.equals(Record.RecordType.Expense)) {
+                        summary_amount -= record.amount;
+                        expense_amount += record.amount;
+                    }
+                    else if (record.type.equals(Record.RecordType.Income)) {
+                        summary_amount += record.amount;
+                        income_amount += record.amount;
+                    } else {
+                        throw new IllegalArgumentException("Unknown Record Type" + record.type.toString());
+                    }
+                }
             }
 
             mHeaderValue.setText(String.format("%.2f", summary_amount));
             mIncomeValue.setText(String.format("%.2f", income_amount));
             mExpenseValue.setText(String.format("%.2f", expense_amount));
         } else if (mListType.equals(ListType.Account)) {
-            List<Account> accounts = mDataHelper.query();
 
-            for (Account account : accounts) {
+            if (cursor.moveToNext()) {
+                Account account = Account.fromCursor(cursor);
                 summary_amount += account.value;
+
+                while (cursor.moveToNext()) {
+                    account = Account.fromCursor(cursor);
+                    summary_amount += account.value;
+                }
             }
 
             mHeaderValue.setText(String.format("%.2f", summary_amount));
         }
-
-
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return mDataHelper.getCursorLoader();
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH) + 1;
+        if (mListType.equals(ListType.Today)) {
+            String today = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 1);
+            String tomorrow = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 2);
+            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {today, tomorrow});
+        } else if (mListType.equals(ListType.Week)) {
+            // 0 - Sunday, 1 - Monday, 2 - Tuesday, 3 - Wednesday, 4 - Thursday...
+            int weekday = now.get(Calendar.DAY_OF_WEEK) % 7;
+            // Sunday as the first day of a week
+            String start = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 1 - weekday );
+            String end = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 2 - weekday + 8);
+            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {start, end});
+        } else if (mListType.equals(ListType.Month)) {
+            String startOfMonth = year + "-" + month + "-" + "01";
+            String endOfMonth = year + "-" + month + "-" + "32";
+            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {startOfMonth, endOfMonth});
+        } else if (mListType.equals(ListType.Year)) {
+            String startOfYear = year + "-" + (Calendar.JANUARY + 1) + "-" + "01";
+            String endOfYear = year + "-" + (Calendar.DECEMBER + 1) + "-" + "32";
+            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {startOfYear, endOfYear});
+        } else if (mListType.equals(ListType.Account)) {
+            return mDataHelper.getCursorLoader(null, null);
+        } else {
+            throw new IllegalArgumentException("Unknown list type: " + mListType);
+        }
     }
 
     @Override
@@ -242,6 +275,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             mEmptyContainer.setVisibility(View.VISIBLE);
             ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + mListType);
         }
+        updateSummary(data);
         mAdapter.changeCursor(data);
     }
 

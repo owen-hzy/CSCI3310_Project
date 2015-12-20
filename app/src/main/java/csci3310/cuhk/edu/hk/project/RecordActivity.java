@@ -67,7 +67,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         if (getIntent().getExtras() == null) {
             newRecordFlag = true;
             Calendar calendar = Calendar.getInstance();
-            valueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+            valueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + (calendar.get(Calendar.DAY_OF_MONTH) + 1);
         } else {
             newRecordFlag = false;
             amountView.setText(getIntent().getExtras().getString(RecordTable.COLUMN_AMOUNT));

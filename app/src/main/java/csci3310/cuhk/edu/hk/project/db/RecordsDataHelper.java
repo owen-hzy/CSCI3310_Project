@@ -87,7 +87,7 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
     @Override
     public int update(Record data) {
         ContentValues values = getContentValues(data);
-        return update(values, RecordTable._ID + " = ?", new String[] { data.id + "" });
+        return update(values, RecordTable._ID + " = ?", new String[]{data.id + ""});
     }
 
     @Override
@@ -106,7 +106,9 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
     }
 
     @Override
-    public CursorLoader getCursorLoader() {
-        return new CursorLoader(getContext(), getContentUri(), null, null, null, RecordTable._ID + " DESC");
+    public CursorLoader getCursorLoader(String selection, String[] selectionArgs) {
+        return new CursorLoader(getContext(), getContentUri(), null, selection, selectionArgs, RecordTable.COLUMN_TIMESTAMP + " DESC");
     }
+
+
 }
