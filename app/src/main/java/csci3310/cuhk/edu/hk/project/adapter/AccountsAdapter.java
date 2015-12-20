@@ -16,9 +16,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import csci3310.cuhk.edu.hk.project.AccountActivity;
+import csci3310.cuhk.edu.hk.project.MainActivity;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.bean.Account;
 import csci3310.cuhk.edu.hk.project.db.AccountTable;
+import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 
 public class AccountsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder> {
 
@@ -34,14 +36,6 @@ public class AccountsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerVi
         Account account = Account.fromCursor(cursor);
         ((AccountViewHolder) holder).mIdView.setText(account.id + "");
         ((AccountViewHolder) holder).mNameView.setText(account.name);
-        TextView valueView = ((AccountViewHolder) holder).mValueView;
-        valueView.setText(String.format("%.2f", account.value));
-
-        if (account.value > 0) {
-            valueView.setTextColor(Color.GREEN);
-        } else if (account.value < 0) {
-            valueView.setTextColor(Color.RED);
-        }
     }
 
     @Override
@@ -55,9 +49,6 @@ public class AccountsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerVi
 
         @Bind(R.id.account_name)
         TextView mNameView;
-
-        @Bind(R.id.account_value)
-        TextView mValueView;
 
         AccountsAdapter mAdapter;
 
@@ -73,14 +64,17 @@ public class AccountsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerVi
             Intent intent = new Intent(mAdapter.mContext, AccountActivity.class);
             intent.putExtra(AccountTable._ID, account.id);
             intent.putExtra(AccountTable.COLUMN_NAME, account.name);
-            intent.putExtra(AccountTable.COLUMN_VALUE, account.value + "");
             mAdapter.mContext.startActivity(intent);
             return true;
         }
 
         @OnClick(R.id.account_item)
         void onItemClick() {
-
+            Account account = Account.fromCursor((Cursor) mAdapter.getItem(getAdapterPosition()));
+            Intent intent = new Intent(mAdapter.mContext, MainActivity.class);
+            intent.putExtra(AccountTable.COLUMN_NAME, account.name);
+            intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.AccountDetail.toString());
+            mAdapter.mContext.startActivity(intent);
         }
     }
 }

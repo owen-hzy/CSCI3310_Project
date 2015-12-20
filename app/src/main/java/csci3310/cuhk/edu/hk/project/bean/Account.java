@@ -8,22 +8,19 @@ public class Account {
 
     public int id;
     public String name;
-    public double value;
 
     public Account() {
 
     }
 
-    public Account(String name, double initialValue) {
+    public Account(String name) {
         this.name = name;
-        this.value = initialValue;
     }
 
     public static Account fromCursor(Cursor cursor) {
         Account account = new Account();
         account.id = cursor.getInt(cursor.getColumnIndex(AccountTable._ID));
         account.name = cursor.getString(cursor.getColumnIndex(AccountTable.COLUMN_NAME));
-        account.value = cursor.getShort(cursor.getColumnIndex(AccountTable.COLUMN_VALUE));
 
         return account;
     }

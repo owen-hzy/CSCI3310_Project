@@ -181,7 +181,7 @@ public class DataProvider extends ContentProvider {
 
         private static final String DB_NAME = "budgetPlanner.db";
 
-        private static final int DB_VERSION = 3;
+        private static final int DB_VERSION = 11;
 
         private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -189,8 +189,12 @@ public class DataProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            RecordTable.TABLE.create(db);
             AccountTable.TABLE.create(db);
+            RecordTable.createTable(db);
+
+            ContentValues values = new ContentValues();
+            values.put(AccountTable.COLUMN_NAME, "Octopus Card");
+            db.insert(AccountTable.TABLE_NAME, null, values);
         }
 
         @Override

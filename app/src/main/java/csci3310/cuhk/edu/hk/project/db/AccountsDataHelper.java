@@ -87,7 +87,6 @@ public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Ac
     public ContentValues getContentValues(Account data) {
         ContentValues values = new ContentValues();
         values.put(AccountTable.COLUMN_NAME, data.name);
-        values.put(AccountTable.COLUMN_VALUE, data.value);
 
         return values;
     }

@@ -29,16 +29,17 @@ import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.adapter.AccountsAdapter;
 import csci3310.cuhk.edu.hk.project.adapter.BaseAbstractRecycleCursorAdapter;
 import csci3310.cuhk.edu.hk.project.adapter.ItemsAdapter;
-import csci3310.cuhk.edu.hk.project.bean.Account;
 import csci3310.cuhk.edu.hk.project.bean.Record;
+import csci3310.cuhk.edu.hk.project.db.AccountTable;
 import csci3310.cuhk.edu.hk.project.db.AccountsDataHelper;
 import csci3310.cuhk.edu.hk.project.db.DBInterface;
+import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
 
 public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static enum ListType {
-        Today("Today"), Week("Week"), Month("Month"),Year("Year"), Account("Account");
+        Today("Today"), Week("Week"), Month("Month"),Year("Year"), Account("Account"), AccountDetail("AccountDetail");
 
         private String value;
         private ListType(String value) {
@@ -70,8 +71,8 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Bind(R.id.empty_container)
     LinearLayout mEmptyContainer;
 
-    @Bind(R.id.item_income_expense_list)
-    LinearLayout mIncomeExpenseContainer;
+    @Bind(R.id.item_summary_container)
+    ViewGroup mSummaryContainer;
 
     private ListType mListType;
 
@@ -102,7 +103,6 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         mAdapter.notifyItemRemoved(position);
         mAdapter.notifyDataSetChanged();
 
-//        updateSummary();
     }
 
     public void cancel(int position) {
@@ -114,10 +114,11 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         // Required empty public constructor
     }
 
-    public static ItemsFragment newInstance(ListType listType) {
+    public static ItemsFragment newInstance(ListType listType, String accountName) {
         ItemsFragment fragment = new ItemsFragment();
         Bundle args = new Bundle();
         args.putString(LIST_TYPE, listType.toString());
+        args.putString(AccountTable.COLUMN_NAME, accountName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -141,7 +142,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         ButterKnife.bind(this, rootView);
 
         if (mListType.equals(ListType.Account)) {
-            mIncomeExpenseContainer.setVisibility(View.GONE);
+            mSummaryContainer.setVisibility(View.GONE);
         }
 
         return rootView;
@@ -157,6 +158,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             case Week:
             case Month:
             case Year:
+            case AccountDetail:
                 mAdapter = new ItemsAdapter(getActivity());
                 mRecyclerView.setAdapter(mAdapter);
                 mItemTouchHelper.attachToRecyclerView(mRecyclerView);
@@ -183,7 +185,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         Double summary_amount = 0.0;
 
         if (mListType.equals(ListType.Today) || mListType.equals(ListType.Week) ||
-                mListType.equals(ListType.Month) || mListType.equals(ListType.Year)) {
+                mListType.equals(ListType.Month) || mListType.equals(ListType.Year) || mListType.equals(ListType.AccountDetail)) {
 
             Double income_amount = 0.0;
             Double expense_amount = 0.0;
@@ -221,19 +223,6 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             mHeaderValue.setText(String.format("%.2f", summary_amount));
             mIncomeValue.setText(String.format("%.2f", income_amount));
             mExpenseValue.setText(String.format("%.2f", expense_amount));
-        } else if (mListType.equals(ListType.Account)) {
-
-            if (cursor.moveToNext()) {
-                Account account = Account.fromCursor(cursor);
-                summary_amount += account.value;
-
-                while (cursor.moveToNext()) {
-                    account = Account.fromCursor(cursor);
-                    summary_amount += account.value;
-                }
-            }
-
-            mHeaderValue.setText(String.format("%.2f", summary_amount));
         }
     }
 
@@ -245,22 +234,25 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mListType.equals(ListType.Today)) {
             String today = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 1);
             String tomorrow = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 2);
-            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {today, tomorrow});
+            return mDataHelper.getCursorLoader(RecordTable.COLUMN_TIMESTAMP + " between ? and ?", new String[] {today, tomorrow});
         } else if (mListType.equals(ListType.Week)) {
             // 0 - Sunday, 1 - Monday, 2 - Tuesday, 3 - Wednesday, 4 - Thursday...
             int weekday = now.get(Calendar.DAY_OF_WEEK) % 7;
             // Sunday as the first day of a week
             String start = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 1 - weekday );
             String end = year + "-" + month + "-" + (now.get(Calendar.DAY_OF_MONTH) + 2 - weekday + 8);
-            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {start, end});
+            return mDataHelper.getCursorLoader(RecordTable.COLUMN_TIMESTAMP + " between ? and ?", new String[] {start, end});
         } else if (mListType.equals(ListType.Month)) {
             String startOfMonth = year + "-" + month + "-" + "01";
             String endOfMonth = year + "-" + month + "-" + "32";
-            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {startOfMonth, endOfMonth});
+            return mDataHelper.getCursorLoader(RecordTable.COLUMN_TIMESTAMP + " between ? and ?", new String[] {startOfMonth, endOfMonth});
         } else if (mListType.equals(ListType.Year)) {
             String startOfYear = year + "-" + (Calendar.JANUARY + 1) + "-" + "01";
             String endOfYear = year + "-" + (Calendar.DECEMBER + 1) + "-" + "32";
-            return mDataHelper.getCursorLoader("timestamp between ? and ?", new String[] {startOfYear, endOfYear});
+            return mDataHelper.getCursorLoader(RecordTable.COLUMN_TIMESTAMP + " between ? and ?", new String[] {startOfYear, endOfYear});
+        } else if (mListType.equals(ListType.AccountDetail)) {
+            String accountName = getArguments().getString(AccountTable.COLUMN_NAME);
+            return mDataHelper.getCursorLoader(RecordTable.COLUMN_ACCOUNT_NAME + " = ?", new String[] {accountName});
         } else if (mListType.equals(ListType.Account)) {
             return mDataHelper.getCursorLoader(null, null);
         } else {
@@ -273,7 +265,11 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (data == null || data.getCount() == 0) {
             mRecyclerView.setVisibility(View.GONE);
             mEmptyContainer.setVisibility(View.VISIBLE);
-            ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + mListType);
+            if (mListType.equals(ListType.AccountDetail)) {
+                ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + getArguments().getString(AccountTable.COLUMN_NAME));
+            } else {
+                ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + mListType);
+            }
         }
         updateSummary(data);
         mAdapter.changeCursor(data);

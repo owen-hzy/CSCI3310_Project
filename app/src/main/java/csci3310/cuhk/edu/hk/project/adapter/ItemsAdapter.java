@@ -82,6 +82,7 @@ public class ItemsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.
             intent.putExtra(RecordTable.COLUMN_CATEGORY, item.category);
             intent.putExtra(RecordTable.COLUMN_TYPE, item.type.toString());
             intent.putExtra(RecordTable.COLUMN_TIMESTAMP, item.timestamp);
+            intent.putExtra(RecordTable.COLUMN_ACCOUNT_NAME, item.account_name);
             mAdapter.mContext.startActivity(intent);
         }
     }

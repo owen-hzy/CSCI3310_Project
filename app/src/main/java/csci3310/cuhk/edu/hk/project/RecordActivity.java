@@ -72,6 +72,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             newRecordFlag = false;
             amountView.setText(getIntent().getExtras().getString(RecordTable.COLUMN_AMOUNT));
             recordId = getIntent().getExtras().getInt(RecordTable._ID);
+            valueArray[0] = getIntent().getExtras().getString(RecordTable.COLUMN_ACCOUNT_NAME);
             valueArray[1] = getIntent().getExtras().getString(RecordTable.COLUMN_TYPE);
             valueArray[2] = getIntent().getExtras().getString(RecordTable.COLUMN_CATEGORY);
             String dateTime = getIntent().getExtras().getString(RecordTable.COLUMN_TIMESTAMP);
@@ -86,18 +87,18 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             @Override
             public void onClick(View v) {
                 Record record = null;
-                try {
-                    if (newRecordFlag) {
-                        record = createRecord();
-                        mDataHelper.insert(record);
-                    } else {
-                        record = createRecord(recordId);
-                        mDataHelper.update(record);
+                if (newRecordFlag) {
+                    record = createRecord();
+                    if (record == null) {
+                        return;
                     }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                    Snackbar.make(v, "Please Select Record Type", Snackbar.LENGTH_LONG).show();
-                    return;
+                    mDataHelper.insert(record);
+                } else {
+                    record = createRecord(recordId);
+                    if (record == null) {
+                        return;
+                    }
+                    mDataHelper.update(record);
                 }
                 Intent intent = new Intent(RecordActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -119,7 +120,16 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
 
     private Record createRecord() {
         Record record = new Record();
+        if (getAttributeFragment().getAttributeValue(1).equalsIgnoreCase("No Type")) {
+            Snackbar.make(findViewById(R.id.create_new_record_fab), "Please Select Type", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
         record.type = Record.RecordType.valueOf(getAttributeFragment().getAttributeValue(1));
+        if (getAttributeFragment().getAttributeValue(0).equalsIgnoreCase("No Account")) {
+            Snackbar.make(findViewById(R.id.create_new_record_fab), "Please Select Account", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
+        record.account_name = getAttributeFragment().getAttributeValue(0);
         record.category = getAttributeFragment().getAttributeValue(2);
         record.timestamp = getAttributeFragment().getAttributeValue(3) + " " + getAttributeFragment().getAttributeValue(4);
         if (TextUtils.isEmpty(amountView.getText())) {
@@ -139,7 +149,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
 
     @Override
     public void onListFragmentInteraction(int position) {
-        if (position > 0 && position < 3) {
+        if (position < 3) {
             showListDialog(position);
         } else if (position == 3) {
             Calendar now = Calendar.getInstance();

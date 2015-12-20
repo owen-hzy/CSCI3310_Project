@@ -15,15 +15,17 @@ public class Record {
     public double amount;
     public RecordType type;
     public String timestamp;
+    public String account_name;
 
     public Record() {
     }
 
-    public Record(String category, double amount, RecordType type, String timestamp) {
+    public Record(String category, double amount, RecordType type, String timestamp, String account_name) {
         this.category = category;
         this.type = type;
         this.timestamp = timestamp;
         this.amount = amount;
+        this.account_name = account_name;
     }
 
     public static Record fromCursor(Cursor cursor) {
@@ -33,6 +35,7 @@ public class Record {
         record.type = RecordType.valueOf(cursor.getString(cursor.getColumnIndex(RecordTable.COLUMN_TYPE)));
         record.category = cursor.getString(cursor.getColumnIndex(RecordTable.COLUMN_CATEGORY));
         record.timestamp = cursor.getString(cursor.getColumnIndex(RecordTable.COLUMN_TIMESTAMP));
+        record.account_name = cursor.getString(cursor.getColumnIndex(RecordTable.COLUMN_ACCOUNT_NAME));
 
         return record;
     }

@@ -14,7 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import csci3310.cuhk.edu.hk.project.R;
+import csci3310.cuhk.edu.hk.project.bean.Account;
+import csci3310.cuhk.edu.hk.project.db.AccountsDataHelper;
 
 public class ListDialogFragment extends AppCompatDialogFragment {
 
@@ -22,6 +27,15 @@ public class ListDialogFragment extends AppCompatDialogFragment {
 
     public int position;
     private OnDialogListItemSelectListener mListener;
+    private AccountsDataHelper mDataHelper;
+    private List<Account> accountList;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mDataHelper = new AccountsDataHelper(getActivity());
+        accountList = mDataHelper.query();
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,7 +47,7 @@ public class ListDialogFragment extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mListener != null) {
-                    mListener.onDialogListItemSelect(position ,which);
+                    mListener.onDialogListItemSelect(position, which);
                 }
             }
         });
@@ -65,7 +79,11 @@ public class ListDialogFragment extends AppCompatDialogFragment {
         String[] listItems = null;
         switch (position) {
             case 0:
-                listItems = new String[] {"1", "2", "3"};
+                List<String> nameList = new ArrayList<>();
+                for (Account account : accountList) {
+                    nameList.add(account.name);
+                }
+                listItems = nameList.toArray(new String[accountList.size()]);
                 break;
             case 1:
                 listItems = getResources().getStringArray(R.array.record_type);

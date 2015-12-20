@@ -102,6 +102,7 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
         values.put(RecordTable.COLUMN_CATEGORY, data.category);
         values.put(RecordTable.COLUMN_TYPE, data.type.toString());
         values.put(RecordTable.COLUMN_TIMESTAMP, data.timestamp);
+        values.put(RecordTable.COLUMN_ACCOUNT_NAME, data.account_name);
         return values;
     }
 

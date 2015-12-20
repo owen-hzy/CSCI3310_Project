@@ -20,9 +20,6 @@ import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 
 public class AccountActivity extends AppCompatActivity {
 
-    @Bind(R.id.new_account_amount)
-    EditText mValueView;
-
     @Bind(R.id.new_account_value)
     EditText mNameView;
 
@@ -48,7 +45,6 @@ public class AccountActivity extends AppCompatActivity {
             newAccountFlag = false;
             accountId = getIntent().getExtras().getInt(AccountTable._ID);
             mNameView.setText(getIntent().getExtras().getString(AccountTable.COLUMN_NAME));
-            mValueView.setText(getIntent().getExtras().getString(AccountTable.COLUMN_VALUE));
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.create_new_account_fab);
@@ -61,11 +57,6 @@ public class AccountActivity extends AppCompatActivity {
                 }
                 Account account = new Account();
                 account.name = mNameView.getText().toString();
-                if (TextUtils.isEmpty(mValueView.getText())) {
-                    account.value = 0.0;
-                } else {
-                    account.value = Double.valueOf(mValueView.getText().toString());
-                }
 
                 if (newAccountFlag) {
                     try {
