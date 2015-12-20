@@ -107,7 +107,6 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         mDataHelper.delete(itemId);
         mAdapter.notifyItemRemoved(position);
         mAdapter.notifyDataSetChanged();
-
     }
 
     public void cancel(int position) {
@@ -277,15 +276,16 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data == null || data.getCount() == 0) {
-            mRecyclerView.setVisibility(View.GONE);
-            mEmptyContainer.setVisibility(View.VISIBLE);
             if (mListType.equals(ListType.AccountDetail)) {
                 ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + getArguments().getString(AccountTable.COLUMN_NAME));
             } else if (mListType.equals(ListType.Budget)) {
                 loadBudget();
+                return;
             } else {
                 ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + mListType);
             }
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyContainer.setVisibility(View.VISIBLE);
         }
         updateSummary(data);
         mAdapter.changeCursor(data);

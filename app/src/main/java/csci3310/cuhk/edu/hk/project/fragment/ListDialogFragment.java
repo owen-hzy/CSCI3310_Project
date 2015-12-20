@@ -43,14 +43,18 @@ public class ListDialogFragment extends AppCompatDialogFragment {
         // Use the Builder for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setItems(getListItems(position), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (mListener != null) {
-                    mListener.onDialogListItemSelect(position, which);
+        if (position == 0 && getListItems(position).length == 0) {
+            builder.setMessage("Please Create Account First");
+        } else {
+            builder.setItems(getListItems(position), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (mListener != null) {
+                        mListener.onDialogListItemSelect(position, which);
+                    }
                 }
-            }
-        });
+            });
+        }
         return builder.create();
     }
 

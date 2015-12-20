@@ -188,7 +188,7 @@ public class DataProvider extends ContentProvider {
 
         private static final String DB_NAME = "budgetPlanner.db";
 
-        private static final int DB_VERSION = 12;
+        private static final int DB_VERSION = 15;
 
         private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -200,9 +200,8 @@ public class DataProvider extends ContentProvider {
             RecordTable.createTable(db);
             BudgetTable.TABLE.create(db);
 
-            ContentValues values = new ContentValues();
-            values.put(AccountTable.COLUMN_NAME, "Octopus Card");
-            db.insert(AccountTable.TABLE_NAME, null, values);
+            // Enable SQLite Foreign Keys Support
+            db.execSQL("PRAGMA foreign_keys = ON;");
         }
 
         @Override
@@ -212,6 +211,15 @@ public class DataProvider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + BudgetTable.TABLE_NAME);
 
             onCreate(db);
+        }
+
+        @Override
+        public void onOpen(SQLiteDatabase db) {
+            super.onOpen(db);
+            if (! db.isReadOnly()) {
+                // Enable foreign key constraints
+                db.execSQL("PRAGMA foreign_keys=ON;");
+            }
         }
     }
 

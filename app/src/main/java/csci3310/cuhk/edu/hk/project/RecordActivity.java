@@ -120,16 +120,16 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
 
     private Record createRecord() {
         Record record = new Record();
-        if (getAttributeFragment().getAttributeValue(1).equalsIgnoreCase("No Type")) {
-            Snackbar.make(findViewById(R.id.create_new_record_fab), "Please Select Type", Snackbar.LENGTH_LONG).show();
-            return null;
-        }
-        record.type = Record.RecordType.valueOf(getAttributeFragment().getAttributeValue(1));
         if (getAttributeFragment().getAttributeValue(0).equalsIgnoreCase("No Account")) {
             Snackbar.make(findViewById(R.id.create_new_record_fab), "Please Select Account", Snackbar.LENGTH_LONG).show();
             return null;
         }
         record.account_name = getAttributeFragment().getAttributeValue(0);
+        if (getAttributeFragment().getAttributeValue(1).equalsIgnoreCase("No Type")) {
+            Snackbar.make(findViewById(R.id.create_new_record_fab), "Please Select Type", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
+        record.type = Record.RecordType.valueOf(getAttributeFragment().getAttributeValue(1));
         record.category = getAttributeFragment().getAttributeValue(2);
         record.timestamp = getAttributeFragment().getAttributeValue(3) + " " + getAttributeFragment().getAttributeValue(4);
         if (TextUtils.isEmpty(amountView.getText())) {
