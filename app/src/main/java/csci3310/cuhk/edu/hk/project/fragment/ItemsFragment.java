@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -28,10 +29,13 @@ import csci3310.cuhk.edu.hk.project.AccountActivity;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.adapter.AccountsAdapter;
 import csci3310.cuhk.edu.hk.project.adapter.BaseAbstractRecycleCursorAdapter;
+import csci3310.cuhk.edu.hk.project.adapter.BudgetsAdapter;
 import csci3310.cuhk.edu.hk.project.adapter.ItemsAdapter;
+import csci3310.cuhk.edu.hk.project.bean.Budget;
 import csci3310.cuhk.edu.hk.project.bean.Record;
 import csci3310.cuhk.edu.hk.project.db.AccountTable;
 import csci3310.cuhk.edu.hk.project.db.AccountsDataHelper;
+import csci3310.cuhk.edu.hk.project.db.BudgetsDataHelper;
 import csci3310.cuhk.edu.hk.project.db.DBInterface;
 import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
@@ -39,7 +43,8 @@ import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
 public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static enum ListType {
-        Today("Today"), Week("Week"), Month("Month"),Year("Year"), Account("Account"), AccountDetail("AccountDetail");
+        Today("Today"), Week("Week"), Month("Month"),Year("Year"), Account("Account"),
+        AccountDetail("AccountDetail"), Budget("Budget");
 
         private String value;
         private ListType(String value) {
@@ -130,7 +135,10 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mListType.equals(ListType.Account)) {
             mDataHelper = new AccountsDataHelper(getActivity());
             setHasOptionsMenu(true);
-        } else {
+        } else if (mListType.equals(ListType.Budget)) {
+            mDataHelper = new BudgetsDataHelper(getActivity());
+        }
+        else {
             mDataHelper = new RecordsDataHelper(getActivity());
         }
     }
@@ -141,7 +149,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         View rootView = inflater.inflate(R.layout.fragment_item_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (mListType.equals(ListType.Account)) {
+        if (mListType.equals(ListType.Account) || mListType.equals(ListType.Budget)) {
             mSummaryContainer.setVisibility(View.GONE);
         }
 
@@ -161,12 +169,19 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             case AccountDetail:
                 mAdapter = new ItemsAdapter(getActivity());
                 mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setHasFixedSize(true);
                 mItemTouchHelper.attachToRecyclerView(mRecyclerView);
                 break;
             case Account:
                 mAdapter = new AccountsAdapter(getActivity());
                 mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setHasFixedSize(true);
                 mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+                break;
+            case Budget:
+                mAdapter = new BudgetsAdapter(getActivity());
+                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setHasFixedSize(true);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown List Type: " + mListType.toString());
@@ -182,11 +197,10 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void updateSummary(Cursor cursor) {
 
-        Double summary_amount = 0.0;
-
         if (mListType.equals(ListType.Today) || mListType.equals(ListType.Week) ||
                 mListType.equals(ListType.Month) || mListType.equals(ListType.Year) || mListType.equals(ListType.AccountDetail)) {
 
+            Double summary_amount = 0.0;
             Double income_amount = 0.0;
             Double expense_amount = 0.0;
 
@@ -253,7 +267,7 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
         } else if (mListType.equals(ListType.AccountDetail)) {
             String accountName = getArguments().getString(AccountTable.COLUMN_NAME);
             return mDataHelper.getCursorLoader(RecordTable.COLUMN_ACCOUNT_NAME + " = ?", new String[] {accountName});
-        } else if (mListType.equals(ListType.Account)) {
+        } else if (mListType.equals(ListType.Account) || mListType.equals(ListType.Budget)) {
             return mDataHelper.getCursorLoader(null, null);
         } else {
             throw new IllegalArgumentException("Unknown list type: " + mListType);
@@ -267,12 +281,23 @@ public class ItemsFragment extends Fragment implements LoaderManager.LoaderCallb
             mEmptyContainer.setVisibility(View.VISIBLE);
             if (mListType.equals(ListType.AccountDetail)) {
                 ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + getArguments().getString(AccountTable.COLUMN_NAME));
+            } else if (mListType.equals(ListType.Budget)) {
+                loadBudget();
             } else {
                 ((TextView) mEmptyContainer.findViewById(R.id.emptyFragment_text)).setText("No Record For " + mListType);
             }
         }
         updateSummary(data);
         mAdapter.changeCursor(data);
+    }
+
+    private void loadBudget() {
+        String[] categoryValues = getActivity().getResources().getStringArray(R.array.category);
+        List<Budget> budgets = new ArrayList<>();
+        for (int i = 0; i < categoryValues.length; i++) {
+            budgets.add(new Budget(categoryValues[i], 0.0));
+        }
+        mDataHelper.bulkInsert(budgets);
     }
 
     @Override

@@ -10,39 +10,39 @@ import android.support.v4.content.CursorLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import csci3310.cuhk.edu.hk.project.bean.Account;
+import csci3310.cuhk.edu.hk.project.bean.Budget;
 
-public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Account> {
+public class BudgetsDataHelper extends BaseDataHelper implements DBInterface<Budget> {
 
-    public AccountsDataHelper(Context context) {
+    public BudgetsDataHelper(Context context) {
         super(context);
     }
 
     @Override
     protected Uri getContentUri() {
-        return DataProvider.getContentUri(AccountTable.TABLE_NAME);
+        return DataProvider.getContentUri(BudgetTable.TABLE_NAME);
     }
 
     @Override
     protected String getTableName() {
-        return AccountTable.TABLE_NAME;
+        return BudgetTable.TABLE_NAME;
     }
 
     @Override
-    public List<Account> query() {
-        List<Account> accounts = new ArrayList<>();
+    public List<Budget> query() {
+        List<Budget> budgets = new ArrayList<>();
         Cursor cursor = query(null, null, null, null);
         if (cursor.moveToFirst()) {
-            accounts.add(Account.fromCursor(cursor));
+            budgets.add(Budget.fromCursor(cursor));
             while (cursor.moveToNext()) {
-                accounts.add(Account.fromCursor(cursor));
+                budgets.add(Budget.fromCursor(cursor));
             }
         }
-        return accounts;
+        return budgets;
     }
 
     @Override
-    public Account query(String id) {
+    public Budget query(String id) {
         return null;
     }
 
@@ -51,21 +51,21 @@ public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Ac
         synchronized (DataProvider.obj) {
             DataProvider.DBHelper mDBHelper = DataProvider.getDBHelper();
             SQLiteDatabase db = mDBHelper.getWritableDatabase();
-            return db.delete(AccountTable.TABLE_NAME, null, null);
+            return db.delete(BudgetTable.TABLE_NAME, null, null);
         }
     }
 
     @Override
-    public Uri insert(Account data) {
+    public Uri insert(Budget data) {
         ContentValues values = getContentValues(data);
         return insert(values);
     }
 
     @Override
-    public void bulkInsert(List<Account> listData) {
+    public void bulkInsert(List<Budget> listData) {
         List<ContentValues> contentValues = new ArrayList<>();
-        for (Account account : listData) {
-            ContentValues values = getContentValues(account);
+        for (Budget budget : listData) {
+            ContentValues values = getContentValues(budget);
             contentValues.add(values);
         }
         ContentValues[] valueArray = new ContentValues[contentValues.size()];
@@ -73,28 +73,27 @@ public class AccountsDataHelper extends BaseDataHelper implements DBInterface<Ac
     }
 
     @Override
-    public int update(Account data) {
+    public int update(Budget data) {
         ContentValues values = getContentValues(data);
-        return update(values, AccountTable._ID + " = ?", new String[]{data.id + ""});
+        return update(values, BudgetTable._ID + " = ?", new String[]{data.id + ""});
     }
 
     @Override
     public int delete(String id) {
-        return delete(AccountTable._ID + "= ?", new String[] { id });
+        return 0;
     }
 
     @Override
-    public ContentValues getContentValues(Account data) {
+    public ContentValues getContentValues(Budget data) {
         ContentValues values = new ContentValues();
-        values.put(AccountTable.COLUMN_NAME, data.name);
+        values.put(BudgetTable.COLUMN_NAME, data.name);
+        values.put(BudgetTable.COLUMN_VALUE, data.value);
 
         return values;
     }
 
     @Override
     public CursorLoader getCursorLoader(String selection, String[] selectionArgs) {
-        return new CursorLoader(getContext(), getContentUri(), null, selection, selectionArgs, AccountTable._ID + " DESC");
+        return new CursorLoader(getContext(), getContentUri(), null, selection, selectionArgs, BudgetTable._ID + " ASC");
     }
-
-
 }

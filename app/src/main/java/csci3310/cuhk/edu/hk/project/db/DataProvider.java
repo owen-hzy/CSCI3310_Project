@@ -25,6 +25,8 @@ public class DataProvider extends ContentProvider {
     private static final int RECORD_ID = 2;
     private static final int ACCOUNT = 3;
     private static final int ACCOUNT_ID = 4;
+    private static final int BUDGET = 5;
+    private static final int BUDGET_ID = 6;
 
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -42,6 +44,8 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, "record/#", RECORD_ID);
         uriMatcher.addURI(AUTHORITY, "account", ACCOUNT);
         uriMatcher.addURI(AUTHORITY, "account/#", ACCOUNT_ID);
+        uriMatcher.addURI(AUTHORITY, "budget", BUDGET);
+        uriMatcher.addURI(AUTHORITY, "budget/#", BUDGET_ID);
     }
 
     public static Uri getContentUri(String table) {
@@ -59,6 +63,9 @@ public class DataProvider extends ContentProvider {
                 break;
             case ACCOUNT:
                 table = AccountTable.TABLE_NAME;
+                break;
+            case BUDGET:
+                table = BudgetTable.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Uri" + uri);
@@ -181,7 +188,7 @@ public class DataProvider extends ContentProvider {
 
         private static final String DB_NAME = "budgetPlanner.db";
 
-        private static final int DB_VERSION = 11;
+        private static final int DB_VERSION = 12;
 
         private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -191,6 +198,7 @@ public class DataProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             AccountTable.TABLE.create(db);
             RecordTable.createTable(db);
+            BudgetTable.TABLE.create(db);
 
             ContentValues values = new ContentValues();
             values.put(AccountTable.COLUMN_NAME, "Octopus Card");
@@ -201,6 +209,7 @@ public class DataProvider extends ContentProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + RecordTable.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + AccountTable.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + BudgetTable.TABLE_NAME);
 
             onCreate(db);
         }

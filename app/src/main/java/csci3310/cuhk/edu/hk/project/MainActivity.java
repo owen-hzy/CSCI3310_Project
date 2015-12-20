@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity
             // TODO: Retrieve database records to determine which fragment to show
         } else if (id == R.id.nav_budget) {
             actionBar.setTitle(getString(R.string.budget));
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Budget, null), "items").commit();
             // TODO: Retrieve database records to determine which fragment to show
         }
 
