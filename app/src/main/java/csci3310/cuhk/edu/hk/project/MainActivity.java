@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity
 
 
         Calendar calendar = Calendar.getInstance();
-//        calendar.set(2015,11,21,3,0,0);
-        calendar.set(Calendar.HOUR_OF_DAY, 5);
-        calendar.set(Calendar.MINUTE, 00);
+        calendar.set(2015,11,21,20,0,0);
+//        calendar.set(Calendar.HOUR_OF_DAY, 20);
+//        calendar.set(Calendar.MINUTE, 00);
         System.out.println("time : " + calendar.getTime());
 
 
