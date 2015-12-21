@@ -43,6 +43,10 @@ public class BudgetActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(budgetName);
 
+
+
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.budget_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
