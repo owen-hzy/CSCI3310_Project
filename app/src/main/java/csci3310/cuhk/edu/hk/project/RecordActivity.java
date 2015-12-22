@@ -16,6 +16,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import csci3310.cuhk.edu.hk.project.bean.Record;
 import csci3310.cuhk.edu.hk.project.db.RecordTable;
@@ -66,8 +67,8 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
 
         if (getIntent().getExtras() == null) {
             newRecordFlag = true;
-            Calendar calendar = Calendar.getInstance();
-            valueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + (calendar.get(Calendar.DAY_OF_MONTH) + 1);
+            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+            valueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
         } else {
             newRecordFlag = false;
             amountView.setText(getIntent().getExtras().getString(RecordTable.COLUMN_AMOUNT));
@@ -130,6 +131,10 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             return null;
         }
         record.type = Record.RecordType.valueOf(getAttributeFragment().getAttributeValue(1));
+        if (getAttributeFragment().getAttributeValue(2).equalsIgnoreCase("No Category")) {
+            Snackbar.make(findViewById(R.id.create_new_record_fab), "Please Select Category", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
         record.category = getAttributeFragment().getAttributeValue(2);
         record.timestamp = getAttributeFragment().getAttributeValue(3) + " " + getAttributeFragment().getAttributeValue(4);
         if (TextUtils.isEmpty(amountView.getText())) {

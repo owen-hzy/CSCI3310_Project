@@ -27,6 +27,7 @@ public class DataProvider extends ContentProvider {
     private static final int ACCOUNT_ID = 4;
     private static final int BUDGET = 5;
     private static final int BUDGET_ID = 6;
+    private static final int RAW_QUERY = 11;
 
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -46,6 +47,7 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, "account/#", ACCOUNT_ID);
         uriMatcher.addURI(AUTHORITY, "budget", BUDGET);
         uriMatcher.addURI(AUTHORITY, "budget/#", BUDGET_ID);
+        uriMatcher.addURI(AUTHORITY, "raw", RAW_QUERY);
     }
 
     public static Uri getContentUri(String table) {
@@ -150,19 +152,27 @@ public class DataProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         synchronized (obj) {
-            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-            queryBuilder.setTables(matchTable(uri));
-
             SQLiteDatabase db = getDBHelper().getReadableDatabase();
-            Cursor cursor = queryBuilder.query(db,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    sortOrder);
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-            return cursor;
+            if (uriMatcher.match(uri) == RAW_QUERY) {
+                Cursor cursor = db.rawQuery(selection, null);
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
+            } else {
+
+                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+                queryBuilder.setTables(matchTable(uri));
+
+
+                Cursor cursor = queryBuilder.query(db,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
+            }
         }
     }
 

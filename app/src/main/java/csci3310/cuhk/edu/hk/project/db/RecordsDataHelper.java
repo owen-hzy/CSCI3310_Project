@@ -41,6 +41,11 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
         return records;
     }
 
+    public Cursor queryRaw(String sql) {
+        Uri uri = DataProvider.getContentUri("raw");
+        return query(uri, null, sql, null, null);
+    }
+
     @Override
     public Record query(String id) {
         Record item = null;

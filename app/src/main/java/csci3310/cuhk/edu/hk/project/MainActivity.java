@@ -18,6 +18,7 @@ import csci3310.cuhk.edu.hk.project.db.AccountTable;
 import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.fragment.ConfirmFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
+import csci3310.cuhk.edu.hk.project.fragment.SummaryFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConfirmFragment.OnDialogButtonClickListener {
@@ -69,10 +70,16 @@ public class MainActivity extends AppCompatActivity
                 String account_name = getIntent().getExtras().getString(AccountTable.COLUMN_NAME);
                 actionBar.setTitle(account_name);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        ItemsFragment.newInstance(mListType, account_name), "items").commit();
+                        ItemsFragment.newInstance(mListType, account_name, null, null), "items").commit();
+            } else if (mListType.equals(ItemsFragment.ListType.Category)) {
+                String category = getIntent().getExtras().getString(RecordTable.COLUMN_CATEGORY);
+                String type = getIntent().getExtras().getString(RecordTable.COLUMN_TYPE);
+                actionBar.setTitle(category + " " + type);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        ItemsFragment.newInstance(mListType, null, category, type)).commit();
             } else {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        ItemsFragment.newInstance(mListType, null), "items").commit();
+                        ItemsFragment.newInstance(mListType, null, null, null), "items").commit();
                 actionBar.setTitle(mListType.toString());
             }
         }
@@ -117,29 +124,30 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_today) {
             actionBar.setTitle(getString(R.string.today));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Today, null), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Today, null, null, null), "items").commit();
         } else if (id == R.id.nav_week) {
             actionBar.setTitle(getString(R.string.week));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Week, null), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Week, null, null, null), "items").commit();
         } else if (id == R.id.nav_month) {
             actionBar.setTitle(getString(R.string.month));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Month, null), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Month, null, null, null), "items").commit();
         } else if (id == R.id.nav_year) {
             actionBar.setTitle(getString(R.string.year));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Year, null), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Year, null, null, null), "items").commit();
         } else if (id == R.id.nav_account) {
             actionBar.setTitle(getString(R.string.account));
             // TODO: Retrieve database records to determine which fragment to show
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Account, null), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Account, null, null, null), "items").commit();
         } else if (id == R.id.nav_summary) {
             actionBar.setTitle(getString(R.string.summary));
             // TODO: Retrieve database records to determine which fragment to show
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, SummaryFragment.newInstance(), "summary").commit();
         } else if (id == R.id.nav_budget) {
             actionBar.setTitle(getString(R.string.budget));
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Budget, null), "items").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ItemsFragment.newInstance(ItemsFragment.ListType.Budget, null, null, null), "items").commit();
             // TODO: Retrieve database records to determine which fragment to show
         }
 
