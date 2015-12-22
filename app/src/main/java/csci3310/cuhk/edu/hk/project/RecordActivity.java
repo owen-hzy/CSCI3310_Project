@@ -1,5 +1,6 @@
 package csci3310.cuhk.edu.hk.project;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -55,6 +57,9 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
     private boolean newRecordFlag = true;
     private int recordId;
 
+    private String date;
+    private String time;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,22 +69,6 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         Toolbar toolbar = (Toolbar) findViewById(R.id.attribute_toolbar);
         amountView = (EditText) findViewById(R.id.new_record_amount);
         // TODO: May add some filter to limit decimal length
-
-        if (getIntent().getExtras() == null) {
-            newRecordFlag = true;
-            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-            valueArray[3] = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
-        } else {
-            newRecordFlag = false;
-            amountView.setText(getIntent().getExtras().getString(RecordTable.COLUMN_AMOUNT));
-            recordId = getIntent().getExtras().getInt(RecordTable._ID);
-            valueArray[0] = getIntent().getExtras().getString(RecordTable.COLUMN_ACCOUNT_NAME);
-            valueArray[1] = getIntent().getExtras().getString(RecordTable.COLUMN_TYPE);
-            valueArray[2] = getIntent().getExtras().getString(RecordTable.COLUMN_CATEGORY);
-            String dateTime = getIntent().getExtras().getString(RecordTable.COLUMN_TIMESTAMP);
-            valueArray[3] = dateTime.split(" ")[0];
-            valueArray[4] = dateTime.split(" ")[1];
-        }
 
         setSupportActionBar(toolbar);
 
@@ -107,6 +96,26 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         });
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (getIntent().getExtras() == null) {
+            newRecordFlag = true;
+            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+            date = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+            valueArray[3] = date;
+            time = "00:00";
+        } else {
+            newRecordFlag = false;
+            amountView.setText(getIntent().getExtras().getString(RecordTable.COLUMN_AMOUNT));
+            recordId = getIntent().getExtras().getInt(RecordTable._ID);
+            valueArray[0] = getIntent().getExtras().getString(RecordTable.COLUMN_ACCOUNT_NAME);
+            valueArray[1] = getIntent().getExtras().getString(RecordTable.COLUMN_TYPE);
+            valueArray[2] = getIntent().getExtras().getString(RecordTable.COLUMN_CATEGORY);
+            String dateTime = getIntent().getExtras().getString(RecordTable.COLUMN_TIMESTAMP);
+            valueArray[3] = dateTime.split(" ")[0];
+            valueArray[4] = dateTime.split(" ")[1];
+            date = valueArray[3];
+            time = valueArray[4];
+        }
 
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, AttributeFragment.newInstance(labelArray, valueArray, iconArray), "attributeList").commit();
     }
@@ -136,7 +145,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             return null;
         }
         record.category = getAttributeFragment().getAttributeValue(2);
-        record.timestamp = getAttributeFragment().getAttributeValue(3) + " " + getAttributeFragment().getAttributeValue(4);
+        record.timestamp = date + " " + time;
         if (TextUtils.isEmpty(amountView.getText())) {
             record.amount = Double.valueOf(0.0);
         } else {
@@ -157,8 +166,9 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         if (position < 3) {
             showListDialog(position);
         } else if (position == 3) {
-            Calendar now = Calendar.getInstance();
+            Calendar now = Calendar.getInstance(TimeZone.getDefault());
             DatePickerDialog dpd = DatePickerDialog.newInstance(this, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+            dpd.setMaxDate(now);
             dpd.show(getFragmentManager(), "datePickerDialog");
         } else if (position == 4) {
             TimePickerDialog tpd = TimePickerDialog.newInstance(this, 0, 0, 0, true);
@@ -183,6 +193,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         String date = year + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
         Log.w(this.getLocalClassName(), "You picked the following date: " + date);
         getAttributeFragment().updateAttributeValue(3, date);
+        this.date = date;
     }
 
     @Override
@@ -190,5 +201,6 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         String time = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute);
         Log.w(this.getLocalClassName(), "You picked the following time: " + time);
         getAttributeFragment().updateAttributeValue(4, time);
+        this.time = time;
     }
 }

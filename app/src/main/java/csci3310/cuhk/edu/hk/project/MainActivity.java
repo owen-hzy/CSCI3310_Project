@@ -19,10 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 import csci3310.cuhk.edu.hk.project.Reminder.NotifyService;
 import csci3310.cuhk.edu.hk.project.db.AccountTable;
+import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.fragment.ConfirmFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 import csci3310.cuhk.edu.hk.project.fragment.SummaryFragment;
@@ -59,14 +61,16 @@ public class MainActivity extends AppCompatActivity
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
 
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2015,11,21,20,0,0);
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        calendar.set(Calendar.HOUR_OF_DAY, 15);
+        calendar.set(Calendar.MINUTE, 20);
+        calendar.set(Calendar.SECOND, 0);
 //        calendar.set(Calendar.HOUR_OF_DAY, 20);
 //        calendar.set(Calendar.MINUTE, 00);
         System.out.println("time : " + calendar.getTime());
 
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY , pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
 
 
