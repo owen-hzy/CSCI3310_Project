@@ -38,6 +38,37 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        if (intent.getExtras() == null) {
+            return;
+        } else {
+            mListType = ItemsFragment.ListType.valueOf(intent.getExtras().getString(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Today.toString()));
+        }
+
+//        if (findViewById(R.id.fragment_container) != null) {
+//
+//            if (mListType.equals(ItemsFragment.ListType.AccountDetail)) {
+//                String account_name = intent.getExtras().getString(AccountTable.COLUMN_NAME);
+//                actionBar.setTitle(account_name);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        ItemsFragment.newInstance(mListType, account_name, null, null), "items").commit();
+//            } else if (mListType.equals(ItemsFragment.ListType.Category)) {
+//                String category = intent.getExtras().getString(RecordTable.COLUMN_CATEGORY);
+//                String type = intent.getExtras().getString(RecordTable.COLUMN_TYPE);
+//                actionBar.setTitle(category + " " + type);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        ItemsFragment.newInstance(mListType, null, category, type)).commit();
+//            } else {
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        ItemsFragment.newInstance(mListType, null, null, null), "items").commit();
+//                actionBar.setTitle(mListType.toString());
+//            }
+//        }
+
+        super.onNewIntent(intent);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -46,12 +77,8 @@ public class MainActivity extends AppCompatActivity
         actionBar = getSupportActionBar();
         actionBar.setTitle("Today");
 
-        if (getIntent().getExtras() == null) {
-            mListType = ItemsFragment.ListType.Today;
-        } else {
-            mListType = ItemsFragment.ListType.valueOf(getIntent().getExtras().getString(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Today.toString()));
-        }
 
+        mListType = ItemsFragment.ListType.Today;
         //Notification
 
 
@@ -87,30 +114,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Check that the activity is using the layout version with
-        // the fragment_container FrameLayout
-        if (findViewById(R.id.fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            if (mListType.equals(ItemsFragment.ListType.AccountDetail)) {
-                String account_name = getIntent().getExtras().getString(AccountTable.COLUMN_NAME);
-                actionBar.setTitle(account_name);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        ItemsFragment.newInstance(mListType, account_name, null, null), "items").commit();
-            } else if (mListType.equals(ItemsFragment.ListType.Category)) {
-                String category = getIntent().getExtras().getString(RecordTable.COLUMN_CATEGORY);
-                String type = getIntent().getExtras().getString(RecordTable.COLUMN_TYPE);
-                actionBar.setTitle(category + " " + type);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        ItemsFragment.newInstance(mListType, null, category, type)).commit();
-            } else {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        ItemsFragment.newInstance(mListType, null, null, null), "items").commit();
-                actionBar.setTitle(mListType.toString());
-            }
-        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                ItemsFragment.newInstance(mListType, null, null, null), "items").commit();
+        actionBar.setTitle(mListType.toString());
     }
 
 

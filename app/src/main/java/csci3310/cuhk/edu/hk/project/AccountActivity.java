@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,7 @@ public class AccountActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.account_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().getExtras() == null) {
             newAccountFlag = true;
@@ -75,9 +77,9 @@ public class AccountActivity extends AppCompatActivity {
                     }
                 }
 
-                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
-                intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Account.toString());
-                startActivity(intent);
+//                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+//                startActivity(intent);
+                NavUtils.navigateUpFromSameTask(AccountActivity.this);
             }
         });
     }

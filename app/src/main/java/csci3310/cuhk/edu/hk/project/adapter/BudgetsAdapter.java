@@ -63,7 +63,7 @@ public class BudgetsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerVie
             Intent intent = new Intent(mAdapter.mContext, BudgetActivity.class);
             intent.putExtra(BudgetTable._ID, budget.id);
             intent.putExtra(BudgetTable.COLUMN_NAME, budget.name);
-            intent.putExtra(BudgetTable.COLUMN_VALUE, budget.value);
+            intent.putExtra(BudgetTable.COLUMN_VALUE, budget.value + "");
             mAdapter.mContext.startActivity(intent);
         }
     }

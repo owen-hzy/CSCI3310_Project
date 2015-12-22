@@ -3,6 +3,7 @@ package csci3310.cuhk.edu.hk.project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -42,10 +43,7 @@ public class BudgetActivity extends AppCompatActivity {
         mValueView.setText(getIntent().getExtras().getString(BudgetTable.COLUMN_VALUE));
 
         getSupportActionBar().setTitle(budgetName);
-
-
-
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.budget_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,9 +60,10 @@ public class BudgetActivity extends AppCompatActivity {
                 budget.name = budgetName;
                 mDataHelper.update(budget);
 
-                Intent intent = new Intent(BudgetActivity.this, MainActivity.class);
-                intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Budget.toString());
-                startActivity(intent);
+//                Intent intent = new Intent(BudgetActivity.this, MainActivity.class);
+//                intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Budget.toString());
+//                startActivity(intent);
+                NavUtils.navigateUpFromSameTask(BudgetActivity.this);
             }
         });
     }

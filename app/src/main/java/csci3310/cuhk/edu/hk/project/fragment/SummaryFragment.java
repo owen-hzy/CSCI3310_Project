@@ -34,6 +34,7 @@ import java.util.List;
 
 import csci3310.cuhk.edu.hk.project.MainActivity;
 import csci3310.cuhk.edu.hk.project.R;
+import csci3310.cuhk.edu.hk.project.SummaryDetailsActivity;
 import csci3310.cuhk.edu.hk.project.bean.Record;
 import csci3310.cuhk.edu.hk.project.dataModel.Category;
 import csci3310.cuhk.edu.hk.project.db.RecordTable;
@@ -242,7 +243,7 @@ public class SummaryFragment extends Fragment implements OnChartValueSelectedLis
         if (e == null) {
             return;
         }
-        Intent intent = new Intent(mDataHelper.getContext(), MainActivity.class);
+        Intent intent = new Intent(mDataHelper.getContext(), SummaryDetailsActivity.class);
         intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Category.toString());
         intent.putExtra(RecordTable.COLUMN_CATEGORY, xVals.get(e.getXIndex()));
         intent.putExtra(RecordTable.COLUMN_TYPE, recordType.toString());

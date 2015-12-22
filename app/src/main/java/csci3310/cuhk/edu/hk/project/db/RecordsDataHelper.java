@@ -113,7 +113,7 @@ public class RecordsDataHelper extends BaseDataHelper implements DBInterface<Rec
 
     @Override
     public CursorLoader getCursorLoader(String selection, String[] selectionArgs) {
-        return new CursorLoader(getContext(), getContentUri(), null, selection, selectionArgs, RecordTable.COLUMN_TIMESTAMP + " DESC");
+        return new CursorLoader(getContext(), getContentUri(), null, selection, selectionArgs, RecordTable.COLUMN_TIMESTAMP + " DESC, " + RecordTable._ID + " DESC");
     }
 
 

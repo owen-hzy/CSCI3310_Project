@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import csci3310.cuhk.edu.hk.project.AccountActivity;
+import csci3310.cuhk.edu.hk.project.AccountDetailsActivity;
 import csci3310.cuhk.edu.hk.project.MainActivity;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.bean.Account;
@@ -71,7 +72,7 @@ public class AccountsAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerVi
         @OnClick(R.id.account_item)
         void onItemClick() {
             Account account = Account.fromCursor((Cursor) mAdapter.getItem(getAdapterPosition()));
-            Intent intent = new Intent(mAdapter.mContext, MainActivity.class);
+            Intent intent = new Intent(mAdapter.mContext, AccountDetailsActivity.class);
             intent.putExtra(AccountTable.COLUMN_NAME, account.name);
             intent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.AccountDetail.toString());
             mAdapter.mContext.startActivity(intent);
