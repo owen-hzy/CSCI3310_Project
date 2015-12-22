@@ -124,8 +124,9 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             newRecordFlag = true;
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
             date = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+            time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
             valueArray[3] = date;
-            time = "00:00";
+            valueArray[4] = time;
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } else {
             newRecordFlag = false;
