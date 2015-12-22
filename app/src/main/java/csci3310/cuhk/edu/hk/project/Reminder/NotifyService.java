@@ -9,8 +9,10 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Binder;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -54,6 +56,9 @@ public class NotifyService extends IntentService {
             mBuilder.setWhen(when);
             mBuilder.setSmallIcon(R.drawable.ic_alarm_add);
             mBuilder.setAutoCancel(true);
+            mBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+            mBuilder.setVibrate(new long[]{1000, 1000});
+            mBuilder.setLights(Color.RED, 3000, 3000);
 
             Intent notificationIntent = new Intent(this, MainActivity.class);
 
