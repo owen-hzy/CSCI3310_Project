@@ -12,7 +12,9 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/account_toolbar"

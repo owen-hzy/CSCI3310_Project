@@ -1,11 +1,15 @@
 package csci3310.cuhk.edu.hk.project;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,10 +24,13 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import csci3310.cuhk.edu.hk.project.bean.Budget;
 import csci3310.cuhk.edu.hk.project.bean.Record;
+import csci3310.cuhk.edu.hk.project.db.BudgetsDataHelper;
 import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
 import csci3310.cuhk.edu.hk.project.fragment.AttributeFragment;
+import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ListDialogFragment;
 
 public class RecordActivity extends AppCompatActivity implements AttributeFragment.OnListFragmentInteractionListener, ListDialogFragment.OnDialogListItemSelectListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -53,6 +60,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
     };
 
     private RecordsDataHelper mDataHelper;
+    private BudgetsDataHelper mBudgetDataHelper;
     private EditText amountView;
     private boolean newRecordFlag = true;
     private int recordId;
@@ -65,6 +73,7 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         super.onCreate(savedInstanceState);
 
         mDataHelper = new RecordsDataHelper(this);
+        mBudgetDataHelper = new BudgetsDataHelper(this);
         setContentView(R.layout.activity_new_record);
         Toolbar toolbar = (Toolbar) findViewById(R.id.attribute_toolbar);
         amountView = (EditText) findViewById(R.id.new_record_amount);
@@ -83,12 +92,14 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
                         return;
                     }
                     mDataHelper.insert(record);
+                    checkBudget(record.category);
                 } else {
                     record = createRecord(recordId);
                     if (record == null) {
                         return;
                     }
                     mDataHelper.update(record);
+                    checkBudget(record.category);
                 }
                 Intent intent = new Intent(RecordActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -126,6 +137,19 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         args.putInt(ListDialogFragment.POSITION, attribute_position);
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), "listDialog");
+    }
+
+    private void checkBudget(String category) {
+        Cursor cursor = mDataHelper.queryRaw("select sum(amount) as amount from record where type = 'Expense' and category = '" + category + "' group by category");
+        double amount = 0.0;
+        if (cursor.moveToFirst()) {
+            amount = cursor.getDouble(cursor.getColumnIndex("amount"));
+        }
+
+        Budget budget = mBudgetDataHelper.query(category);
+        if (budget.value < amount) {
+            notifyBudget(amount, budget.value, category);
+        }
     }
 
     private Record createRecord() {
@@ -202,5 +226,22 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         Log.w(this.getLocalClassName(), "You picked the following time: " + time);
         getAttributeFragment().updateAttributeValue(4, time);
         this.time = time;
+    }
+
+    private void notifyBudget(double amount, double budget, String category) {
+        NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_payment)
+                .setContentTitle("Alert for " + category)
+                .setContentText("Expense " + amount + " exceeds the budget " + budget);
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Budget.toString());
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setAutoCancel(true);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(0, mBuilder.build());
     }
 }

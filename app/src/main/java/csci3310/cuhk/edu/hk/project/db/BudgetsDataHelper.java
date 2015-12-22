@@ -42,8 +42,13 @@ public class BudgetsDataHelper extends BaseDataHelper implements DBInterface<Bud
     }
 
     @Override
-    public Budget query(String id) {
-        return null;
+    public Budget query(String category) {
+        Cursor cursor = query(null, "name = ?", new String[] {category}, null);
+        Budget budget = null;
+        if (cursor.moveToFirst()) {
+            budget = Budget.fromCursor(cursor);
+        }
+        return budget;
     }
 
     @Override

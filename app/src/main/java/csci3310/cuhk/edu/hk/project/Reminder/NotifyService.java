@@ -74,7 +74,7 @@ public class NotifyService extends Service {
         mBuilder.setContentText("Have you enter your transaction today:)");
         mBuilder.setTicker("Alert!");
         mBuilder.setWhen(time);
-        mBuilder.setSmallIcon(R.drawable.ic_alarm_white_48dp);
+        mBuilder.setSmallIcon(R.drawable.ic_alarm_add);
         mBuilder.setAutoCancel(true);
 
 

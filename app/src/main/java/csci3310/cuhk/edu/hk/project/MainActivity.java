@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity
 //    private Context context;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +61,7 @@ public class MainActivity extends AppCompatActivity
 
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        calendar.set(Calendar.HOUR_OF_DAY, 15);
-        calendar.set(Calendar.MINUTE, 20);
-        calendar.set(Calendar.SECOND, 0);
+        calendar.set(2015,11,22,17,19,0);
 //        calendar.set(Calendar.HOUR_OF_DAY, 20);
 //        calendar.set(Calendar.MINUTE, 00);
         System.out.println("time : " + calendar.getTime());
