@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import csci3310.cuhk.edu.hk.project.AccountActivity;
 import csci3310.cuhk.edu.hk.project.R;
 import csci3310.cuhk.edu.hk.project.bean.Account;
 import csci3310.cuhk.edu.hk.project.db.AccountsDataHelper;
@@ -44,7 +46,13 @@ public class ListDialogFragment extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         if (position == 0 && getListItems(position).length == 0) {
-            builder.setMessage("Please Create Account First");
+            builder.setItems(new String[]{"Please Create Account First"}, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getActivity(), AccountActivity.class);
+                    getActivity().startActivity(intent);
+                }
+            });
         } else {
             builder.setItems(getListItems(position), new DialogInterface.OnClickListener() {
                 @Override

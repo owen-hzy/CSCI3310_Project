@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class DateTimeUtils {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
     public static String getString(Date date) {
         if (date == null) {
@@ -14,4 +14,5 @@ public class DateTimeUtils {
         }
         return dateFormat.format(date);
     }
+
 }

@@ -61,13 +61,11 @@ public class MainActivity extends AppCompatActivity
 
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        calendar.set(2015,11,22,17,19,0);
+        calendar.set(2015,11,22,21,13,0);
 //        calendar.set(Calendar.HOUR_OF_DAY, 20);
 //        calendar.set(Calendar.MINUTE, 00);
-        System.out.println("time : " + calendar.getTime());
 
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 120000, pendingIntent);
 
 
 

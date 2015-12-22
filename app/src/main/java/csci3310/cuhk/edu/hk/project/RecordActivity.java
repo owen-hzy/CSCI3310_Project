@@ -21,6 +21,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -32,6 +33,7 @@ import csci3310.cuhk.edu.hk.project.db.RecordsDataHelper;
 import csci3310.cuhk.edu.hk.project.fragment.AttributeFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ListDialogFragment;
+import csci3310.cuhk.edu.hk.project.utils.DateTimeUtils;
 
 public class RecordActivity extends AppCompatActivity implements AttributeFragment.OnListFragmentInteractionListener, ListDialogFragment.OnDialogListItemSelectListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -147,6 +149,9 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
         }
 
         Budget budget = mBudgetDataHelper.query(category);
+        if (budget == null) {
+            budget = new Budget(category, 0.0);
+        }
         if (budget.value < amount) {
             notifyBudget(amount, budget.value, category);
         }
