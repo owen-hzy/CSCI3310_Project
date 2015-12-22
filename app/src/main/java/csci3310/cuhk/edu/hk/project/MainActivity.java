@@ -1,5 +1,8 @@
 package csci3310.cuhk.edu.hk.project;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,12 +13,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Calendar;
+
+
+import csci3310.cuhk.edu.hk.project.Reminder.NotifyService;
 import csci3310.cuhk.edu.hk.project.db.AccountTable;
-import csci3310.cuhk.edu.hk.project.db.RecordTable;
 import csci3310.cuhk.edu.hk.project.fragment.ConfirmFragment;
 import csci3310.cuhk.edu.hk.project.fragment.ItemsFragment;
 import csci3310.cuhk.edu.hk.project.fragment.SummaryFragment;
@@ -25,6 +32,9 @@ public class MainActivity extends AppCompatActivity
 
     private ActionBar actionBar;
     private ItemsFragment.ListType mListType;
+//    private Context context;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,25 @@ public class MainActivity extends AppCompatActivity
         } else {
             mListType = ItemsFragment.ListType.valueOf(getIntent().getExtras().getString(ItemsFragment.LIST_TYPE, ItemsFragment.ListType.Today.toString()));
         }
+
+        //Notification
+
+
+        Intent myIntent = new Intent(this , NotifyService.class);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2015,11,21,20,0,0);
+//        calendar.set(Calendar.HOUR_OF_DAY, 20);
+//        calendar.set(Calendar.MINUTE, 00);
+        System.out.println("time : " + calendar.getTime());
+
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY , pendingIntent);
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.new_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +113,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
 
     @Override
     public void onBackPressed() {
