@@ -140,6 +140,9 @@ public class RecordActivity extends AppCompatActivity implements AttributeFragme
             String dateTime = getIntent().getExtras().getString(RecordTable.COLUMN_TIMESTAMP);
             valueArray[3] = dateTime.split(" ")[0];
             valueArray[4] = dateTime.split(" ")[1];
+            accountName = valueArray[0];
+            type = valueArray[1];
+            category = valueArray[2];
             date = valueArray[3];
             time = valueArray[4];
         }
